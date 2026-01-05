@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>都享券 - 數字化運營與財務駕駛艙</title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖標 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- 引入 Chart.js 用於圖表 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --bg-light: #f8f9fa;
+        }
+        body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f4f6f9; }
+        .sidebar { min-height: 100vh; background-color: #2c3e50; color: white; }
+        .nav-link { color: rgba(255,255,255,0.8); cursor: pointer; margin-bottom: 5px; }
+        .nav-link:hover, .nav-link.active { color: white; background-color: rgba(255,255,255,0.1); border-radius: 5px; }
+        .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; margin-bottom: 20px; }
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .icon-box { font-size: 2rem; opacity: 0.8; }
+        .live-feed { height: 300px; overflow-y: auto; font-size: 0.9rem; }
+        .risk-badge { font-size: 0.8em; padding: 5px 10px; }
+        
+        /* 圖表容器強制高度，防止錯位 */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        .chart-container-large {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        /* 模擬地圖區域 */
+        .map-placeholder {
+            background-color: #e9ecef;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+        }
+        
+        /* 商業模式流程圖樣式 */
+        .biz-model-step {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar p-3 d-none d-md-block">
+            <h4 class="mb-4"><i class="fas fa-ticket-alt me-2"></i>都享券控制台</h4>
+            <div class="nav flex-column">
+                <a class="nav-link active" onclick="switchTab('execution', this)"><i class="fas fa-chart-line me-2"></i>項目執行監控</a>
+                <a class="nav-link" onclick="switchTab('financial', this)"><i class="fas fa-coins me-2"></i>資金與營收模型</a>
+                <hr>
+                <div class="small text-muted mt-2">
+                    <p>數據來源: 項目申請報告 V2</p>
+                    <p>開發方: 廣東卓啟雲鏈</p>
+                    <p>日期: 2025-10-20</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Header (Visible only on small screens) -->
+        <div class="col-12 d-md-none bg-dark text-white p-3 mb-3">
+             <div class="d-flex justify-content-between">
+                <span><i class="fas fa-ticket-alt me-2"></i>都享券</span>
+                <div>
+                    <button class="btn btn-sm btn-outline-light me-2" onclick="switchTab('execution', null)">執行</button>
+                    <button class="btn btn-sm btn-outline-light" onclick="switchTab('financial', null)">財務</button>
+                </div>
+             </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 p-4">
+            
+            <!-- 1. Execution Dashboard (Operational) -->
+            <div id="execution-view">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3><i class="fas fa-satellite-dish text-primary me-2"></i>項目運營實時監控 (黃埔樣板 & 廣州核心區)</h3>
+                    <span class="badge bg-success">系統運行正常</span>
+                </div>
+
+                <!-- Top Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stat-card bg-primary text-white p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">合作商家 (家)</h6>
+                                    <h2 id="merchant-count">2,085</h2>
+                                    <small>目標: 2000+ (核心區)</small>
+                                </div>
+                                <i class="fas fa-store icon-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stat-card bg-success text-white p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">註冊用戶 (人)</h6>
+                                    <h2 id="user-count">502,400</h2>
+                                    <small>轉化率: 25.1%</small>
+                                </div>
+                                <i class="fas fa-users icon-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stat-card bg-warning text-dark p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">今日核銷流水 (萬元)</h6>
+                                    <h2 id="daily-gmv">1,450</h2>
+                                    <small>平均折扣: 8.8折</small>
+                                </div>
+                                <i class="fas fa-money-bill-wave icon-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stat-card bg-danger text-white p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">風控預警 (次)</h6>
+                                    <h2 id="risk-alerts">3</h2>
+                                    <small>需人工介入處理</small>
+                                </div>
+                                <i class="fas fa-exclamation-triangle icon-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Map / Visual -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <strong><i class="fas fa-map-marked-alt me-2"></i>商家分佈與實時交易熱力圖</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="map-placeholder" id="map-area">
+                                    <span class="text-muted">此處加載廣州市 GIS 地圖 (模擬顯示交易脈衝)</span>
+                                    <!-- Dots generated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Feed -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <strong><i class="fas fa-list-ul me-2"></i>實時交易/操作日誌</strong>
+                            </div>
+                            <div class="card-body live-feed" id="transaction-feed">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                     <!-- Risk Control Table -->
+                     <div class="col-lg-8">
+                        <div class="card mt-2">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <strong><i class="fas fa-shield-alt me-2"></i>商家風控監測看板 (准入-監測-追償)</strong>
+                                <small class="text-muted d-none d-sm-block">數據依據：報告P8-P9風控體系</small>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>商家名稱</th>
+                                            <th>信用評分</th>
+                                            <th>當前充值餘額</th>
+                                            <th>3日核銷率</th>
+                                            <th>狀態</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="risk-table-body">
+                                        <!-- JS Populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mt-2 h-100">
+                            <div class="card-header bg-white">
+                                <strong><i class="fas fa-bullseye me-2"></i>階段目標進度 (第1年)</strong>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="small mt-3">資金周轉率 (目標: 4次/年)</h6>
+                                <div class="progress mb-3" style="height: 10px;">
+                                    <div class="progress-bar bg-info" style="width: 65%">2.6次</div>
+                                </div>
+                                <h6 class="small">壞賬率控制 (目標: < 0.8%)</h6>
+                                <div class="progress mb-3" style="height: 10px;">
+                                    <div class="progress-bar bg-success" style="width: 10%">0.08%</div>
+                                </div>
+                                <h6 class="small">場景拓展 (餐飲/住宿/體育)</h6>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" style="width: 40%">餐飲覆蓋率 80%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Financial Dashboard (Revenue) -->
+            <div id="financial-view" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3><i class="fas fa-chart-pie text-success me-2"></i>項目資金與營收預測模型</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm active">總覽</button>
+                        <button class="btn btn-outline-secondary btn-sm">第1年</button>
+                        <button class="btn btn-outline-secondary btn-sm">第2年</button>
+                        <button class="btn btn-outline-secondary btn-sm">第3年</button>
+                    </div>
+                </div>
+
+                <!-- Investment Plan Row -->
+                <div class="row mb-4">
+                    <!-- 左側：投資分佈餅圖 -->
+                    <div class="col-lg-4 col-md-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <strong>10億投資分期計劃 (報告P9)</strong>
+                            </div>
+                            <div class="card-body">
+                                <!-- 關鍵修復：添加一個固定高度的容器來包裹 Canvas -->
+                                <div class="chart-container">
+                                    <canvas id="investmentChart"></canvas>
+                                </div>
+                                <div class="mt-2 small text-muted text-center">
+                                    <ul class="list-unstyled">
+                                        <li><span class="text-primary">●</span> 一期 (4億): 核心區充值、研發</li>
+                                        <li><span style="color:#6610f2">●</span> 二期 (3億): 非核心區、場景延伸</li>
+                                        <li><span class="text-secondary">●</span> 三期 (3億): 珠三角拓展、增值服務</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右側：商業模式 -->
+                    <div class="col-lg-8 col-md-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <strong>商業模式：集採差價利潤模型</strong>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <!-- 流程圖區域 -->
+                                <div class="d-flex align-items-center justify-content-around flex-wrap text-center py-4">
+                                    
+                                    <!-- Step 1 -->
+                                    <div class="biz-model-step p-3 border rounded bg-light mb-2">
+                                        <h5>運營方充值</h5>
+                                        <h3 class="text-primary fw-bold">85折</h3>
+                                        <p class="small text-muted mb-0">集採獲得折扣</p>
+                                    </div>
+                                    
+                                    <!-- Arrow -->
+                                    <div class="display-6 text-muted mb-2 d-none d-md-block"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="display-6 text-muted mb-2 d-md-none"><i class="fas fa-arrow-down"></i></div>
+
+                                    <!-- Step 2 (Core) -->
+                                    <div class="biz-model-step p-3 border rounded shadow-sm border-success bg-white mb-2 position-relative">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            核心盈利
+                                        </span>
+                                        <h5 class="text-success">都享券平台</h5>
+                                        <h3 class="text-success fw-bold">3% - 5%</h3>
+                                        <p class="small text-muted mb-0">淨利差價 + 數據增值</p>
+                                    </div>
+
+                                    <!-- Arrow -->
+                                    <div class="display-6 text-muted mb-2 d-none d-md-block"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="display-6 text-muted mb-2 d-md-none"><i class="fas fa-arrow-down"></i></div>
+
+                                    <!-- Step 3 -->
+                                    <div class="biz-model-step p-3 border rounded bg-light mb-2">
+                                        <h5>用戶消費</h5>
+                                        <h3 class="text-primary fw-bold">88折</h3>
+                                        <p class="small text-muted mb-0">免費領券使用</p>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info small mb-0 mt-3">
+                                    <i class="fas fa-info-circle me-1"></i> <strong>風控保障邏輯：</strong> 資金循環在第三方或監管賬戶，實行"先充值後核銷"，壞賬率假設 &lt; 0.5% (成熟期)。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROI Projection -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <strong>三年淨利潤與ROI測算 (報告P7-P8)</strong>
+                            </div>
+                            <div class="card-body">
+                                <!-- 關鍵修復：添加一個固定高度的容器來包裹 Canvas -->
+                                <div class="chart-container-large">
+                                    <canvas id="roiChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Table -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <strong>詳細財務測算表 (單位: 億元)</strong>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>階段</th>
+                                            <th>用戶規模</th>
+                                            <th>年度流水(GMV)</th>
+                                            <th>資金周轉率</th>
+                                            <th>壞賬損失預估</th>
+                                            <th>淨利潤 (5%模型)</th>
+                                            <th>累計ROI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>第1年 (拓展期)</td>
+                                            <td>200萬</td>
+                                            <td>48.0</td>
+                                            <td>4次</td>
+                                            <td class="text-danger">-0.096 (0.8%)</td>
+                                            <td class="text-success fw-bold">2.304</td>
+                                            <td>57.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>第2年 (成熟期)</td>
+                                            <td>200萬</td>
+                                            <td>60.0</td>
+                                            <td>6次</td>
+                                            <td class="text-danger">-0.050 (0.5%)</td>
+                                            <td class="text-success fw-bold">2.950</td>
+                                            <td>75.1%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>第3年 (穩定期)</td>
+                                            <td>300萬</td>
+                                            <td>90.0</td>
+                                            <td>6次</td>
+                                            <td class="text-danger">-0.075 (0.5%)</td>
+                                            <td class="text-success fw-bold">4.425</td>
+                                            <td>96.79%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. Tab Switching Logic ---
+    function switchTab(tabId, element) {
+        document.getElementById('execution-view').style.display = tabId === 'execution' ? 'block' : 'none';
+        document.getElementById('financial-view').style.display = tabId === 'financial' ? 'block' : 'none';
+        
+        // Update active class on nav
+        if(element) {
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(l => l.classList.remove('active'));
+            element.classList.add('active');
+        }
+    }
+
+    // --- 2. Chart.js Initialization (Financial View) ---
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Investment Pie Chart
+        const ctxInv = document.getElementById('investmentChart').getContext('2d');
+        new Chart(ctxInv, {
+            type: 'doughnut',
+            data: {
+                labels: ['一期投入 (4億)', '二期投入 (3億)', '三期投入 (3億)'],
+                datasets: [{
+                    data: [4, 3, 3],
+                    backgroundColor: ['#0d6efd', '#6610f2', '#6c757d']
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, // 關鍵修正：防止高度錯位
+                plugins: {
+                    legend: {
+                        display: false // 隱藏默認圖例，改用自定義HTML以節省空間
+                    }
+                },
+                layout: {
+                    padding: 10
+                }
+            }
+        });
+
+        // ROI Bar/Line Combo Chart
+        const ctxRoi = document.getElementById('roiChart').getContext('2d');
+        new Chart(ctxRoi, {
+            type: 'bar',
+            data: {
+                labels: ['第1年', '第2年', '第3年'],
+                datasets: [
+                    {
+                        label: '年度消費流水 (億元)',
+                        data: [48, 60, 90],
+                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                        barPercentage: 0.6
+                    },
+                    {
+                        label: '稅後淨利潤 (億元, 5%淨利)',
+                        data: [2.304, 2.95, 4.425],
+                        type: 'line',
+                        borderColor: '#198754',
+                        backgroundColor: '#198754',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#198754',
+                        pointRadius: 5,
+                        yAxisID: 'y1',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // 關鍵修正
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        position: 'left', 
+                        title: {display: true, text: '流水規模 (億)'},
+                        grid: { borderDash: [2, 2] }
+                    },
+                    y1: { 
+                        beginAtZero: true, 
+                        position: 'right', 
+                        grid: {drawOnChartArea: false}, 
+                        title: {display: true, text: '淨利潤 (億)'} 
+                    }
+                }
+            }
+        });
+    });
+
+    // --- 3. Execution Dashboard Simulation Logic ---
+    
+    // Mock Data for Merchants
+    const merchants = [
+        {name: "廣州酒家 (天河店)", score: 95, balance: "85,000", rate: "65%", status: "正常"},
+        {name: "點都德 (海珠店)", score: 92, balance: "62,000", rate: "58%", status: "正常"},
+        {name: "炳勝公館", score: 88, balance: "45,000", rate: "50%", status: "正常"},
+        {name: "某特色私廚 (風險演示)", score: 65, balance: "12,000", rate: "15%", status: "異常預警"},
+        {name: "陶陶居 (北京路)", score: 90, balance: "78,000", rate: "70%", status: "正常"}
+    ];
+
+    // Populate Risk Table
+    const tableBody = document.getElementById('risk-table-body');
+    if(tableBody) {
+        merchants.forEach(m => {
+            let statusBadge = m.status === "正常" 
+                ? '<span class="badge bg-success risk-badge">正常</span>' 
+                : '<span class="badge bg-danger risk-badge">預警: 核銷率低</span>';
+            
+            let actionBtn = m.status === "正常"
+                ? '<button class="btn btn-sm btn-outline-primary">查看詳情</button>'
+                : '<button class="btn btn-sm btn-danger">暫停充值</button>';
+
+            let row = `<tr>
+                <td>${m.name}</td>
+                <td>${m.score}</td>
+                <td>¥${m.balance}</td>
+                <td>${m.rate}</td>
+                <td>${statusBadge}</td>
+                <td>${actionBtn}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Simulate Live Transactions
+    const feed = document.getElementById('transaction-feed');
+    const actions = ["核銷都享券", "領取都享券", "商家充值"];
+    const locations = ["天河區", "海珠區", "越秀區", "黃埔區"];
+    
+    function addTransaction() {
+        if(!feed) return;
+        const now = new Date();
+        const time = now.toLocaleTimeString();
+        const act = actions[Math.floor(Math.random() * actions.length)];
+        const loc = locations[Math.floor(Math.random() * locations.length)];
+        const amount = Math.floor(Math.random() * 500) + 50;
+        
+        let color = "text-primary";
+        if (act === "領取都享券") color = "text-success";
+        if (act === "商家充值") color = "text-warning";
+
+        const item = `<div class="border-bottom py-2">
+            <small class="text-muted">${time}</small> <br>
+            <span class="${color} fw-bold">[${act}]</span> 用戶***在 ${loc} 產生交易 ¥${amount}
+        </div>`;
+        
+        feed.innerHTML = item + feed.innerHTML;
+        if (feed.children.length > 20) feed.removeChild(feed.lastChild);
+        
+        // Randomly add map dots
+        addMapDot();
+    }
+
+    function addMapDot() {
+        const mapArea = document.getElementById('map-area');
+        if(!mapArea) return;
+        const dot = document.createElement('div');
+        dot.className = 'map-dot';
+        // Random position within container
+        dot.style.left = Math.random() * 90 + 5 + '%';
+        dot.style.top = Math.random() * 80 + 10 + '%';
+        mapArea.appendChild(dot);
+        
+        // Remove dot after animation
+        setTimeout(() => {
+            if(dot.parentNode) dot.parentNode.removeChild(dot);
+        }, 2000);
+    }
+
+    // Start Simulation Loop
+    setInterval(addTransaction, 1500);
+
+</script>
+</body>
+</html>
