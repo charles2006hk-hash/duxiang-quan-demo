@@ -11,13 +11,12 @@
     
     <style>
         :root {
-            /* V18 專業商務配色 */
-            --bg-body: #f1f5f9;
+            /* V19 專業商務配色 */
+            --bg-body: #f0f2f5;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --card-bg: #ffffff;
             
-            /* 增強色系 */
             --color-primary: #2563eb; /* 皇家藍 */
             --color-success: #059669; /* 翡翠綠 */
             --color-warning: #d97706; /* 琥珀黃 */
@@ -45,29 +44,10 @@
         #app-container { display: none; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; }
         
         /* Sidebar Fixed */
-        .sidebar { 
-            width: 260px; 
-            background: #fff; 
-            border-right: 1px solid #e2e8f0; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            z-index: 100; 
-            box-shadow: 4px 0 24px rgba(0,0,0,0.02); 
-            height: 100vh; /* 強制全高 */
-        }
-        
-        /* 滾動區域 */
-        .sidebar-menu {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            /* 隱藏滾動條但保留功能 */
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
-        }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 24px rgba(0,0,0,0.02); height: 100vh; }
+        .sidebar-menu { flex-grow: 1; overflow-y: auto; margin-bottom: 20px; scrollbar-width: none; }
         .sidebar-menu::-webkit-scrollbar { display: none; }
-
+        
         .nav-item { padding: 12px 16px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 12px; transition: 0.2s; font-weight: 500; border-left: 3px solid transparent; }
         .nav-item:hover { background: #f8fafc; color: var(--text-dark); }
         .nav-item.active { background: #eff6ff; color: var(--color-primary); border-left-color: var(--color-primary); font-weight: 600; }
@@ -82,12 +62,14 @@
 
         .main-content { flex-grow: 1; padding: 24px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
         
-        /* Dashboard Layouts */
+        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         
-        /* Layout Grid System */
-        .dashboard-grid { 
-            display: grid; 
+        /* === Layout Grids === */
+        
+        /* Ops Dashboard: Top KPI, Bottom Left Map, Bottom Right Logs */
+        .ops-grid {
+            display: grid;
             grid-template-columns: 2fr 1fr; /* 左地圖(2) 右日誌(1) */
             grid-template-rows: 140px 1fr; /* 上KPI(固定) 下主體(自適應) */
             gap: 20px; 
@@ -121,7 +103,6 @@
         .panel.border-green { border-top: 4px solid var(--color-success); }
         .panel.border-purple { border-top: 4px solid var(--color-purple); }
         .panel.border-orange { border-top: 4px solid var(--color-warning); }
-        .panel.border-red { border-top: 4px solid var(--color-danger); }
 
         .panel-head { 
             padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 1rem; color: var(--text-dark);
@@ -130,9 +111,9 @@
         .panel-body { flex-grow: 1; position: relative; overflow: hidden; background: #fff; }
         .panel-body.scrollable { overflow-y: auto; }
 
-        /* KPI Row */
+        /* KPI Row (Requirement 1: Data Cards on Top) */
         .kpi-row { 
-            grid-column: 1 / -1; 
+            grid-column: 1 / -1; /* 跨越所有列 */
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             gap: 20px; 
@@ -170,7 +151,7 @@
         .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.015); }
         .table-hover tbody tr:hover { background-color: rgba(37, 99, 235, 0.05); }
 
-        /* Secret Modal */
+        /* Secret Modal (Full Screen) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-window { width: 1000px; height: 90vh; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: var(--shadow-md); }
         .doc-nav { width: 240px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
@@ -322,8 +303,8 @@
                     </div>
                 </div>
 
-                <!-- Bottom Left: Map -->
-                <div class="map-section panel border-blue" style="grid-column: 1 / 3;">
+                <!-- Bottom Left: Map (Area 1) -->
+                <div class="map-section panel border-blue" style="grid-column: 1;">
                     <div class="panel-head">
                         <span><i class="fas fa-map-marked-alt text-primary me-2"></i>實時熱力分佈</span>
                         <div class="btn-group btn-group-sm">
@@ -361,8 +342,8 @@
                     </div>
                 </div>
 
-                <!-- Right: Logs & Tables -->
-                <div class="kpi-col" style="grid-column: 3;">
+                <!-- Bottom Right: Logs & Tables (Area 2) -->
+                <div class="info-section">
                     <div class="panel border-orange" style="flex:1;">
                         <div class="panel-head">實時交易日誌</div>
                         <div class="panel-body" style="overflow-y:auto;">
@@ -756,8 +737,7 @@
     }
 
     function startLiveFeed() {
-        if(feedInterval) clearInterval(feedInterval);
-        feedInterval = setInterval(() => {
+        setInterval(() => {
             const target = locs[Math.floor(Math.random() * locs.length)];
             const amt = Math.floor(Math.random() * 800) + 50;
             const row = document.createElement('li');
