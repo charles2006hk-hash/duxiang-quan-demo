@@ -17,6 +17,7 @@
             --text-muted: #64748b;
             --card-bg: #ffffff;
             
+            /* 增強色系 */
             --color-primary: #2563eb; /* 皇家藍 */
             --color-success: #059669; /* 翡翠綠 */
             --color-warning: #d97706; /* 琥珀黃 */
@@ -70,7 +71,7 @@
         /* Ops Dashboard: Top KPI, Bottom Left Map, Bottom Right Logs */
         .ops-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr; /* 左地圖(2) 右日誌(1) */
+            grid-template-columns: 2fr 1fr; /* 左地圖(2) 右數據(1) */
             grid-template-rows: 140px 1fr; /* 上KPI(固定) 下主體(自適應) */
             gap: 20px; 
             height: calc(100vh - 110px); 
@@ -111,7 +112,7 @@
         .panel-body { flex-grow: 1; position: relative; overflow: hidden; background: #fff; }
         .panel-body.scrollable { overflow-y: auto; }
 
-        /* KPI Row (Requirement 1: Data Cards on Top) */
+        /* KPI Row */
         .kpi-row { 
             grid-column: 1 / -1; /* 跨越所有列 */
             display: grid; 
@@ -127,6 +128,15 @@
         .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 5px 0; }
         .kpi-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
+        /* Map Section (Bottom Left) */
+        .map-section { grid-column: 1; grid-row: 2; }
+        
+        /* Info Section (Bottom Right) */
+        .info-section { 
+            grid-column: 2; grid-row: 2; 
+            display: flex; flex-direction: column; gap: 20px; 
+        }
+
         /* Map */
         #map-wrapper { width: 100%; height: 100%; position: relative; background: #f8fafc; overflow: hidden; border-radius: 12px; }
         .svg-map { width: 100%; height: 100%; position: absolute; transition: opacity 0.5s; top: 0; left: 0; }
@@ -134,6 +144,7 @@
         .inactive-map { opacity: 0; z-index: 0; pointer-events: none; }
         .map-land { fill: #cbd5e1; stroke: #fff; stroke-width: 1; transition: 0.3s; }
         .map-land:hover { fill: #94a3b8; }
+        .map-land-mo { fill: #cbd5e1; stroke: #f59e0b; stroke-width: 1.5; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.3)); }
         .map-land.highlight { fill: var(--color-primary); }
         
         .pulse { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--c); transform: translate(-50%, -50%); z-index: 20; box-shadow: 0 0 10px var(--c); }
@@ -151,7 +162,7 @@
         .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.015); }
         .table-hover tbody tr:hover { background-color: rgba(37, 99, 235, 0.05); }
 
-        /* Secret Modal (Full Screen) */
+        /* Secret Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-window { width: 1000px; height: 90vh; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: var(--shadow-md); }
         .doc-nav { width: 240px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
@@ -276,9 +287,9 @@
             </div>
         </div>
 
-        <!-- View 1: 運營駕駛艙 (Classic Layout: KPI Top, Map Bottom Left, Logs Bottom Right) -->
+        <!-- View 1: 運營駕駛艙 (Classic Layout) -->
         <div id="view-ops" class="view-section active">
-            <div class="dashboard-grid">
+            <div class="ops-grid">
                 <!-- Top Row: KPI Cards -->
                 <div class="kpi-row">
                     <div class="kpi-card" style="border-left: 4px solid var(--color-primary);">
@@ -319,7 +330,7 @@
                             <!-- GBA Map -->
                             <svg id="svg-map-gba" class="svg-map active-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
                                 <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
-                                <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
+                                <path class="map-land-mo" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
                                 <!-- Links -->
                                 <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
@@ -330,7 +341,7 @@
                                 <circle cx="680" cy="420" r="6" fill="#7c3aed" />
                                 <text x="690" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
                                 <circle cx="300" cy="480" r="6" fill="#f59e0b" />
-                                <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門</text>
+                                <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門 (大三巴)</text>
                             </svg>
                             <!-- HP Map -->
                             <svg id="svg-map-hp" class="svg-map inactive-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
@@ -352,7 +363,7 @@
                     </div>
                     <!-- New Tables (Requested) -->
                     <div class="panel border-purple" style="flex:1;">
-                        <div class="panel-head">運營數據監控</div>
+                        <div class="panel-head">區域業績排名</div>
                         <div class="panel-body p-0 scrollable">
                             <table class="table-custom table-striped">
                                 <thead><tr><th>區域</th><th>今日訂單</th><th>業績</th></tr></thead>
@@ -360,6 +371,19 @@
                                     <tr><td>黃埔區</td><td>1,240</td><td class="text-success">¥85,400</td></tr>
                                     <tr><td>天河區</td><td>3,500</td><td class="text-success">¥210,000</td></tr>
                                     <tr><td>澳門</td><td>420</td><td class="text-warning">MOP 50,000</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel border-teal" style="flex:1;">
+                        <div class="panel-head">熱門品類核銷</div>
+                        <div class="panel-body p-0 scrollable">
+                            <table class="table-custom table-striped">
+                                <thead><tr><th>品類</th><th>核銷數</th><th>佔比</th></tr></thead>
+                                <tbody>
+                                    <tr><td>特色餐飲</td><td>12,400</td><td class="text-primary">65%</td></tr>
+                                    <tr><td>交通出行</td><td>4,200</td><td class="text-info">25%</td></tr>
+                                    <tr><td>文旅門票</td><td>1,800</td><td class="text-purple">10%</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -737,7 +761,8 @@
     }
 
     function startLiveFeed() {
-        setInterval(() => {
+        if(feedInterval) clearInterval(feedInterval);
+        feedInterval = setInterval(() => {
             const target = locs[Math.floor(Math.random() * locs.length)];
             const amt = Math.floor(Math.random() * 800) + 50;
             const row = document.createElement('li');
