@@ -11,21 +11,18 @@
     
     <style>
         :root {
-            /* V19 專業商務配色 */
             --bg-body: #f0f2f5;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --card-bg: #ffffff;
-            
-            --color-primary: #2563eb; /* 皇家藍 */
-            --color-success: #059669; /* 翡翠綠 */
-            --color-warning: #d97706; /* 琥珀黃 */
-            --color-danger: #dc2626;  /* 警示紅 */
-            --color-purple: #7c3aed;  /* 戰略紫 */
-            --color-teal: #0d9488;    /* 科技青 */
-            
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --color-primary: #2563eb; 
+            --color-success: #059669; 
+            --color-warning: #d97706; 
+            --color-danger: #dc2626;  
+            --color-purple: #7c3aed;  
+            --color-teal: #0d9488;    
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
             --border-radius: 12px;
         }
 
@@ -42,99 +39,45 @@
 
         /* Main App */
         #app-container { display: none; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; }
-        
-        /* Sidebar Fixed */
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 24px rgba(0,0,0,0.02); height: 100vh; }
         .sidebar-menu { flex-grow: 1; overflow-y: auto; margin-bottom: 20px; scrollbar-width: none; }
-        .sidebar-menu::-webkit-scrollbar { display: none; }
-        
         .nav-item { padding: 12px 16px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 12px; transition: 0.2s; font-weight: 500; border-left: 3px solid transparent; }
         .nav-item:hover { background: #f8fafc; color: var(--text-dark); }
         .nav-item.active { background: #eff6ff; color: var(--color-primary); border-left-color: var(--color-primary); font-weight: 600; }
         .nav-item-secret { margin-top: 20px; border: 1px dashed var(--color-purple); color: var(--color-purple); background: #fdf4ff; }
         .nav-item-secret:hover { background: #fae8ff; }
-        
-        /* 底部固定區域 */
-        .sidebar-footer {
-            margin-top: auto;
-            flex-shrink: 0;
-        }
+        .sidebar-footer { margin-top: auto; flex-shrink: 0; }
 
         .main-content { flex-grow: 1; padding: 24px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        
-        /* === Layout Grids === */
-        
-        /* Ops Dashboard: Top KPI, Bottom Left Map, Bottom Right Logs */
-        .ops-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr; /* 左地圖(2) 右數據(1) */
-            grid-template-rows: 140px 1fr; /* 上KPI(固定) 下主體(自適應) */
-            gap: 20px; 
-            height: calc(100vh - 110px); 
-        }
+        /* === Ops Dashboard Layout (KPI Top, Map Left, Info Right) === */
+        .ops-container { display: flex; flex-direction: column; height: 100%; gap: 20px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; flex: 0 0 auto; height: 120px; }
+        .ops-bottom { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; min-height: 0; }
+        .info-col { display: flex; flex-direction: column; gap: 20px; overflow: hidden; height: 100%; }
 
-        .finance-grid {
-            display: grid;
-            grid-template-columns: 400px 1fr 300px; /* 左中右 */
-            grid-template-rows: 60% 40%;
-            gap: 20px;
-            height: calc(100vh - 110px);
-        }
-
-        .gba-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            height: calc(100vh - 110px);
-        }
+        /* Other Grids */
+        .finance-grid { display: grid; grid-template-columns: 350px 1fr 300px; grid-template-rows: 55% 45%; gap: 20px; height: calc(100vh - 100px); }
+        .gba-grid { display: flex; flex-direction: column; gap: 20px; height: calc(100vh - 100px); }
         
         /* Panels */
-        .panel { 
-            background: #fff; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); 
-            display: flex; flex-direction: column; overflow: hidden; height: 100%; border: 1px solid #e2e8f0;
-            transition: box-shadow 0.3s;
-        }
+        .panel { background: #fff; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; overflow: hidden; height: 100%; border: 1px solid #e2e8f0; transition: box-shadow 0.3s; }
         .panel:hover { box-shadow: var(--shadow-md); }
-        /* 頂部彩條 */
         .panel.border-blue { border-top: 4px solid var(--color-primary); }
         .panel.border-green { border-top: 4px solid var(--color-success); }
         .panel.border-purple { border-top: 4px solid var(--color-purple); }
         .panel.border-orange { border-top: 4px solid var(--color-warning); }
 
-        .panel-head { 
-            padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 1rem; color: var(--text-dark);
-            display: flex; justify-content: space-between; align-items: center; background: #fff;
-        }
+        .panel-head { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 1rem; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; background: #fff; flex-shrink: 0; }
         .panel-body { flex-grow: 1; position: relative; overflow: hidden; background: #fff; }
         .panel-body.scrollable { overflow-y: auto; }
 
-        /* KPI Row */
-        .kpi-row { 
-            grid-column: 1 / -1; /* 跨越所有列 */
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 20px; 
-        }
-        .kpi-card { 
-            background: #fff; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); 
-            border-left: 4px solid transparent; transition: transform 0.2s;
-            display: flex; flex-direction: column; justify-content: center;
-        }
+        /* KPI Card */
+        .kpi-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); border-left: 4px solid transparent; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: center; }
         .kpi-card:hover { transform: translateY(-2px); }
-        .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 5px 0; }
+        .kpi-value { font-size: 2rem; font-weight: 700; color: var(--text-dark); margin: 5px 0; }
         .kpi-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* Map Section (Bottom Left) */
-        .map-section { grid-column: 1; grid-row: 2; }
-        
-        /* Info Section (Bottom Right) */
-        .info-section { 
-            grid-column: 2; grid-row: 2; 
-            display: flex; flex-direction: column; gap: 20px; 
-        }
 
         /* Map */
         #map-wrapper { width: 100%; height: 100%; position: relative; background: #f8fafc; overflow: hidden; border-radius: 12px; }
@@ -146,20 +89,23 @@
         .map-land-mo { fill: #cbd5e1; stroke: #f59e0b; stroke-width: 1.5; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.3)); }
         .map-land.highlight { fill: var(--color-primary); }
         
+        /* Pulse */
         .pulse { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--c); transform: translate(-50%, -50%); z-index: 20; box-shadow: 0 0 10px var(--c); }
         .pulse::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--c); animation: ripple 1.5s infinite; }
         @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
 
+        /* Radar */
+        .radar-scan { position: absolute; top: 50%; left: 50%; width: 600px; height: 600px; transform: translate(-50%, -50%); border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(37, 99, 235, 0.1) 60deg, transparent 100deg); animation: radar-spin 4s linear infinite; pointer-events: none; z-index: 5; }
+        @keyframes radar-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
         /* Tables & Lists */
         .feed-list { padding: 0; margin: 0; list-style: none; }
-        .feed-item { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .feed-item { padding: 10px 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .feed-item:hover { background: #f8fafc; }
-        
-        .table-custom { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .table-custom th { text-align: left; padding: 12px 20px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-weight: 600; color: var(--text-dark); white-space: nowrap; }
-        .table-custom td { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; color: var(--text-dark); vertical-align: middle; }
+        .table-custom { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-custom th { text-align: left; padding: 10px 15px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-weight: 600; color: var(--text-dark); position: sticky; top: 0; }
+        .table-custom td { padding: 10px 15px; border-bottom: 1px solid #f1f5f9; color: var(--text-dark); vertical-align: middle; }
         .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.015); }
-        .table-hover tbody tr:hover { background-color: rgba(37, 99, 235, 0.05); }
 
         /* Secret Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -178,27 +124,17 @@
         .a4-footer { position: absolute; bottom: 15mm; width: calc(100% - 50mm); text-align: center; font-size: 9pt; color: #999; border-top: 1px solid #eee; padding-top: 10px; }
         .stamp { width: 120px; height: 120px; border: 3px solid #dc2626; border-radius: 50%; color: #dc2626; display: flex; align-items: center; justify-content: center; font-weight: bold; transform: rotate(-15deg); position: absolute; opacity: 0.7; }
         
-        /* Cert Card */
+        /* Cert Card & Gov Doc */
         .cert-card { background: #fff; border: 8px solid #fcd34d; padding: 30px; text-align: center; border-radius: 8px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
         .cert-badge { font-size: 3rem; color: #d97706; margin-bottom: 10px; }
-        
-        /* Gov Doc */
         .gov-doc { background: #fff; padding: 40px; border: 1px solid #e2e8f0; font-family: 'SimSun'; position: relative; }
         .gov-head { color: #dc2626; font-size: 2rem; font-weight: bold; text-align: center; border-bottom: 2px solid #dc2626; padding-bottom: 10px; margin-bottom: 20px; letter-spacing: 2px; }
 
         /* Mobile Demo Fixed */
         .mobile-demo-wrapper { background: #e0e7ff; height: 100%; display: flex; justify-content: center; align-items: center; gap: 60px; background-image: radial-gradient(#c7d2fe 1px, transparent 1px); background-size: 20px 20px; }
-        .phone-mockup {
-            width: 320px; height: 650px; background: #fff; border-radius: 40px;
-            box-shadow: 0 30px 60px -10px rgba(0,0,0,0.25); border: 8px solid #1f2937; 
-            position: relative; overflow: hidden; display: flex; flex-direction: column; flex-shrink: 0;
-        }
-        .phone-notch {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 120px; height: 25px; background: #1f2937; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 20;
-        }
+        .phone-mockup { width: 320px; height: 650px; background: #fff; border-radius: 40px; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.25); border: 8px solid #1f2937; position: relative; overflow: hidden; display: flex; flex-direction: column; flex-shrink: 0; }
+        .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #1f2937; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 20; }
         
-        /* Views */
         .view-section { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.3s ease-out; }
         .view-section.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -208,7 +144,6 @@
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--color-primary); cursor: pointer; margin-top: -6px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #cbd5e1; border-radius: 2px; }
         
-        /* Mode Toggle */
         .mode-toggle { background: #eef2ff; border-radius: 30px; padding: 4px; display: flex; border: 1px solid #e0e7ff; }
         .mode-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #6366f1; border: none; background: transparent; transition: 0.3s; }
         .mode-btn.active { background: #fff; color: #4338ca; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
@@ -247,7 +182,6 @@
     <nav class="sidebar">
         <div class="h5 fw-bold mb-5 ps-2 text-primary"><i class="fas fa-ticket-alt me-2"></i>都享券控制台</div>
         
-        <!-- 滾動菜單 -->
         <div class="sidebar-menu">
             <div class="nav-item active" onclick="switchView('ops')"><i class="fas fa-chart-pie"></i> 運營駕駛艙</div>
             <div class="nav-item" onclick="switchView('fin')"><i class="fas fa-coins"></i> 資金與營收</div>
@@ -256,14 +190,13 @@
             <div class="nav-item nav-item-secret" onclick="openSecret()"><i class="fas fa-file-contract"></i> 項目公司 (機密)</div>
         </div>
 
-        <!-- 底部固定 -->
         <div class="sidebar-footer">
             <div class="nav-item text-danger border border-danger border-opacity-25 justify-content-center mt-3" onclick="goHome()">
                 <i class="fas fa-power-off me-2"></i> 退出系統
             </div>
             <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
                 <div class="small text-secondary fw-bold">@2025 卓啟雲鏈 & 蟻米集團</div>
-                <div class="small text-muted mt-1" style="font-size: 0.65rem;">V17.0.0 Pro</div>
+                <div class="small text-muted mt-1" style="font-size: 0.65rem;">V20.1.0 Pro</div>
             </div>
         </div>
     </nav>
@@ -286,9 +219,9 @@
             </div>
         </div>
 
-        <!-- View 1: 運營駕駛艙 (Classic Layout) -->
+        <!-- View 1: 運營駕駛艙 -->
         <div id="view-ops" class="view-section active">
-            <div class="ops-grid">
+            <div class="ops-container">
                 <!-- Top Row: KPI Cards -->
                 <div class="kpi-row">
                     <div class="kpi-card" style="border-left: 4px solid var(--color-primary);">
@@ -313,88 +246,89 @@
                     </div>
                 </div>
 
-                <!-- Bottom Left: Map (Area 1) -->
-                <div class="map-section panel border-blue" style="grid-column: 1;">
-                    <div class="panel-head">
-                        <span><i class="fas fa-map-marked-alt text-primary me-2"></i>實時熱力分佈</span>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary active" onclick="setMap('all')">全覽</button>
-                            <button class="btn btn-outline-secondary" onclick="setMap('gz')">廣州</button>
-                            <button class="btn btn-outline-secondary" onclick="setMap('hk')">香港</button>
-                            <button class="btn btn-outline-secondary" onclick="setMap('mo')">澳門</button>
+                <!-- Bottom Row: Split Layout -->
+                <div class="ops-bottom">
+                    <!-- Bottom Left: Map -->
+                    <div class="map-section panel border-blue" style="grid-column: 1;">
+                        <div class="panel-head">
+                            <span><i class="fas fa-map-marked-alt text-primary me-2"></i>實時熱力分佈</span>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary active" onclick="setMap('all')">全覽</button>
+                                <button class="btn btn-outline-secondary" onclick="setMap('gz')">廣州</button>
+                                <button class="btn btn-outline-secondary" onclick="setMap('hk')">香港</button>
+                                <button class="btn btn-outline-secondary" onclick="setMap('mo')">澳門</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div id="map-wrapper">
+                                <!-- GBA Map -->
+                                <svg id="svg-map-gba" class="svg-map active-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                                    <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
+                                    <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
+                                    <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
+                                    <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
+                                    <line x1="450" y1="280" x2="300" y2="480" stroke="#fcd34d" stroke-width="2" stroke-dasharray="5,5" />
+                                    
+                                    <circle cx="450" cy="280" r="8" fill="#3b82f6" />
+                                    <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州總部</text>
+                                    <circle cx="680" cy="420" r="6" fill="#7c3aed" />
+                                    <text x="690" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
+                                    <circle cx="300" cy="480" r="6" fill="#f59e0b" />
+                                    <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門</text>
+                                </svg>
+                                <!-- HP Map -->
+                                <svg id="svg-map-hp" class="svg-map inactive-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                                    <path class="map-land-hp" d="M250,150 L550,120 L650,250 L600,350 L200,300 Z" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
+                                    <text x="400" y="220" text-anchor="middle" fill="#047857" font-weight="bold" font-size="24">科學城核心區</text>
+                                </svg>
+                                <div class="radar-scan"></div>
+                                <div id="pulse-layer" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-body">
-                        <div id="map-wrapper">
-                            <!-- GBA Map -->
-                            <svg id="svg-map-gba" class="svg-map active-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-                                <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
-                                <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
-                                <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
-                                <!-- Links -->
-                                <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
-                                <line x1="450" y1="280" x2="300" y2="480" stroke="#fcd34d" stroke-width="2" stroke-dasharray="5,5" />
-                                <!-- Nodes -->
-                                <circle cx="450" cy="280" r="8" fill="#3b82f6" />
-                                <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州總部</text>
-                                <circle cx="680" cy="420" r="6" fill="#7c3aed" />
-                                <text x="690" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
-                                <circle cx="300" cy="480" r="6" fill="#f59e0b" />
-                                <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門 (大三巴)</text>
-                            </svg>
-                            <!-- HP Map -->
-                            <svg id="svg-map-hp" class="svg-map inactive-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-                                <path class="map-land-hp" d="M250,150 L550,120 L650,250 L600,350 L200,300 Z" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
-                                <text x="400" y="220" text-anchor="middle" fill="#047857" font-weight="bold" font-size="24">科學城核心區</text>
-                            </svg>
-                            <div id="pulse-layer" style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Bottom Right: Logs & Tables (Area 2) -->
-                <div class="info-section">
-                    <div class="panel border-orange" style="flex:1;">
-                        <div class="panel-head">實時交易日誌</div>
-                        <div class="panel-body" style="overflow-y:auto;">
-                            <ul class="feed-list" id="feed-list"></ul>
+                    <!-- Bottom Right: Info -->
+                    <div class="info-col" style="grid-column: 2;">
+                        <div class="panel border-orange" style="flex:1;">
+                            <div class="panel-head">實時交易日誌</div>
+                            <div class="panel-body" style="overflow-y:auto;">
+                                <ul class="feed-list" id="feed-list"></ul>
+                            </div>
                         </div>
-                    </div>
-                    <!-- New Tables (Requested) -->
-                    <div class="panel border-purple" style="flex:1;">
-                        <div class="panel-head">區域業績排名</div>
-                        <div class="panel-body p-0 scrollable">
-                            <table class="table-custom table-striped">
-                                <thead><tr><th>區域</th><th>今日訂單</th><th>業績</th></tr></thead>
-                                <tbody>
-                                    <tr><td>黃埔區</td><td>1,240</td><td class="text-success">¥85,400</td></tr>
-                                    <tr><td>天河區</td><td>3,500</td><td class="text-success">¥210,000</td></tr>
-                                    <tr><td>澳門</td><td>420</td><td class="text-warning">MOP 50,000</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="panel border-purple" style="flex:1;">
+                            <div class="panel-head">區域業績排名</div>
+                            <div class="panel-body p-0 scrollable">
+                                <table class="table-custom table-striped">
+                                    <thead><tr><th>區域</th><th>今日訂單</th><th>業績</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>黃埔區</td><td>1,240</td><td class="text-success">¥85,400</td></tr>
+                                        <tr><td>天河區</td><td>3,500</td><td class="text-success">¥210,000</td></tr>
+                                        <tr><td>澳門</td><td>420</td><td class="text-warning">MOP 50,000</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel border-teal" style="flex:1;">
-                        <div class="panel-head">熱門品類核銷</div>
-                        <div class="panel-body p-0 scrollable">
-                            <table class="table-custom table-striped">
-                                <thead><tr><th>品類</th><th>核銷數</th><th>佔比</th></tr></thead>
-                                <tbody>
-                                    <tr><td>特色餐飲</td><td>12,400</td><td class="text-primary">65%</td></tr>
-                                    <tr><td>交通出行</td><td>4,200</td><td class="text-info">25%</td></tr>
-                                    <tr><td>文旅門票</td><td>1,800</td><td class="text-purple">10%</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="panel border-teal" style="flex:1;">
+                            <div class="panel-head">熱門品類核銷</div>
+                            <div class="panel-body p-0 scrollable">
+                                <table class="table-custom table-striped">
+                                    <thead><tr><th>品類</th><th>核銷數</th><th>佔比</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>特色餐飲</td><td>12,400</td><td class="text-primary">65%</td></tr>
+                                        <tr><td>交通出行</td><td>4,200</td><td class="text-info">25%</td></tr>
+                                        <tr><td>文旅門票</td><td>1,800</td><td class="text-purple">10%</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- View 2: 資金營收 (Data Populated) -->
+        <!-- View 2: 資金營收 -->
         <div id="view-fin" class="view-section">
             <div class="finance-grid">
-                <!-- 左：模擬器 -->
                 <div class="panel border-blue" style="grid-row: span 2;">
                     <div class="panel-head">利潤模型模擬器</div>
                     <div class="panel-body p-4">
@@ -410,26 +344,20 @@
                             <small class="text-muted">預估毛利空間</small>
                             <h2 class="text-primary m-0" id="margin-display">3.0%</h2>
                         </div>
+                        <div class="mt-4 p-3 bg-light rounded border small text-muted">
+                            數據來源：《都享券項目申請報告 V2》<br>
+                            基於3.6億GMV模型，5%淨利率測算。
+                        </div>
                     </div>
                 </div>
-                
-                <!-- 中：趨勢圖 -->
                 <div class="panel border-green">
                     <div class="panel-head">年度淨利潤趨勢預測</div>
-                    <div class="panel-body p-3">
-                        <canvas id="profitChart"></canvas>
-                    </div>
+                    <div class="panel-body p-3"><canvas id="profitChart"></canvas></div>
                 </div>
-
-                <!-- 右：佔比圖 (Fixed: Added Back) -->
                 <div class="panel border-purple">
                     <div class="panel-head">資金流向佔比</div>
-                    <div class="panel-body p-3">
-                        <canvas id="pieChart"></canvas>
-                    </div>
+                    <div class="panel-body p-3"><canvas id="pieChart"></canvas></div>
                 </div>
-
-                <!-- 下：數據表 (Fixed: Added Data) -->
                 <div class="panel border-orange" style="grid-column: 2 / span 2;">
                     <div class="panel-head">年度財務詳表 (基於3.6億 GMV 測算)</div>
                     <div class="panel-body p-0 scrollable">
@@ -442,7 +370,7 @@
             </div>
         </div>
 
-        <!-- View 3: 用戶端體驗 (Mobile UI Fixed) -->
+        <!-- View 3: 用戶端體驗 -->
         <div id="view-app" class="view-section" style="height:100%;">
             <div class="mobile-demo-wrapper">
                 <div class="phone-mockup">
@@ -485,10 +413,9 @@
             </div>
         </div>
 
-        <!-- View 4: 粵港澳拓展 (Vertical Layout) -->
+        <!-- View 4: 粵港澳拓展 -->
         <div id="view-gba" class="view-section">
             <div class="gba-grid">
-                <!-- 上：路線圖 -->
                 <div class="panel border-purple">
                     <div class="panel-head">拓展路線圖 (Roadmap)</div>
                     <div class="panel-body p-5">
@@ -513,18 +440,17 @@
                     </div>
                 </div>
                 
-                <!-- 下：數據分欄 -->
                 <div class="d-flex gap-4 h-100">
                     <div class="panel border-teal" style="flex:1;">
                         <div class="panel-head">跨境增長預測表</div>
                         <div class="panel-body p-0 scrollable">
                             <table class="table-custom table-striped">
-                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th><th>結算幣種</th></tr></thead>
+                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th></tr></thead>
                                 <tbody>
-                                    <tr><td>廣州 (總部)</td><td>5,000</td><td>300,000</td><td>15,000</td><td>CNY</td></tr>
-                                    <tr><td>香港 (拓展)</td><td>800</td><td>50,000</td><td>2,500</td><td>HKD</td></tr>
-                                    <tr><td>澳門 (拓展)</td><td>300</td><td>20,000</td><td>1,000</td><td>MOP</td></tr>
-                                    <tr class="fw-bold bg-light"><td>總計</td><td>6,100</td><td>370,000</td><td>18,500</td><td>多幣種</td></tr>
+                                    <tr><td>廣州 (總部)</td><td>5,000</td><td>300,000</td><td>15,000</td></tr>
+                                    <tr><td>香港 (拓展)</td><td>800</td><td>50,000</td><td>2,500</td></tr>
+                                    <tr><td>澳門 (拓展)</td><td>300</td><td>20,000</td><td>1,000</td></tr>
+                                    <tr class="fw-bold bg-light"><td>總計</td><td>6,100</td><td>370,000</td><td>18,500</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -552,7 +478,7 @@
             <button class="btn btn-outline-danger w-100 mt-5" onclick="closeSecret()">關閉窗口</button>
         </div>
         <div class="doc-content" id="doc-viewer">
-            <!-- 協議全文 (完整6頁內容) -->
+            <!-- Full Contract Content -->
             <div id="content-contract">
                 <div class="a4-paper">
                     <div class="a4-title">戰略合作框架協議</div>
@@ -605,63 +531,40 @@
                 </div>
                 <div class="a4-paper">
                     <div style="display:flex; justify-content:space-between; margin-top:50px;">
-                        <div>甲方 (蓋章)：<div class="stamp" style="left:50px;">廣東卓啟</div></div>
-                        <div>乙方 (蓋章)：<div class="stamp" style="right:50px;">蟻米集團</div></div>
-                    </div>
-                    <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:space-between; padding:0 50px;">
-                       <div>授權代表：(簽字)</div>
-                       <div>授權代表：(簽字)</div>
+                        <div>甲方(蓋章)：<br><strong>廣東卓啟</strong><br>代表人：張錦喜</div>
+                        <div>乙方(蓋章)：<br><strong>蟻米集團</strong><br>代表人：林毅</div>
                     </div>
                     <div class="a4-footer">- PAGE 6 -</div>
                 </div>
             </div>
             
-            <!-- PPT 內容 -->
-            <div id="content-ppt" style="display:none;">
-                <div class="ppt-slide">
-                    <h3 class="ppt-title">都享券：雙平臺模式</h3>
-                    <div class="row mt-4">
-                        <div class="col-6"><div class="p-3 bg-light rounded h-100 border">
-                            <h5 class="text-primary">都享匯 (公共服務)</h5>
-                            <p class="small text-muted">城市文化活動打卡、全域數字地圖。引流到地，記錄行跡。</p>
-                        </div></div>
-                        <div class="col-6"><div class="p-3 bg-light rounded h-100 border">
-                            <h5 class="text-success">都享券 (商業運營)</h5>
-                            <p class="small text-muted">餐飲零售消費聯券。引流到店，創造現金流。</p>
-                        </div></div>
-                    </div>
-                </div>
-                <div class="ppt-slide">
-                    <h4 class="mb-4">六位一體數字技術</h4>
-                    <div class="row g-3">
-                        <div class="col-4"><div class="p-3 border rounded text-center">1. 聯合體圖譜</div></div>
-                        <div class="col-4"><div class="p-3 border rounded text-center">2. 數據化通券</div></div>
-                        <div class="col-4"><div class="p-3 border rounded text-center">3. 數字化聯卡</div></div>
-                        <div class="col-4"><div class="p-3 border rounded text-center">4. AI智慧服務</div></div>
-                        <div class="col-4"><div class="p-3 border rounded text-center">5. AI數字人</div></div>
-                        <div class="col-4"><div class="p-3 border rounded text-center">6. 沉浸式遊購</div></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 證書牆 -->
             <div id="content-cert" style="display:none;">
                 <div class="cert-grid">
                     <div class="cert-card">
-                        <div class="cert-badge"><i class="fas fa-certificate"></i></div>
-                        <div class="cert-title">高新技術企業</div>
-                        <p>國家級認證 · 證書編號 GR2023...</p>
+                        <i class="fas fa-certificate text-warning fa-3x mb-3"></i>
+                        <h4>高新技術企業</h4>
+                        <p class="text-secondary">國家級認證</p>
                     </div>
                     <div class="cert-card">
-                        <div class="cert-badge"><i class="fas fa-award"></i></div>
-                        <div class="cert-title">專精特新中小企業</div>
-                        <p>廣東省工業和信息化廳</p>
+                        <i class="fas fa-award text-warning fa-3x mb-3"></i>
+                        <h4>專精特新中小企業</h4>
+                        <p class="text-secondary">廣東省工信廳</p>
                     </div>
                 </div>
                 <div class="gov-doc mt-4">
                     <div class="gov-head">廣州開發區商務局文件</div>
                     <div class="text-center fw-bold fs-5 mb-4">關於印發《2025 黃埔出彩生活季活動工作方案》的通知</div>
-                    <p>各有關單位：為進一步提振消費，推動全區商業高質量發展，經研究同意，現將工作方案印發給你們，請認真組織實施。支持卓啟雲鏈等企業利用數字化手段打造消費新場景...</p>
+                    <p>各有關單位：為進一步提振消費，推動全區商業高質量發展，經研究同意，現將工作方案印發給你們，請認真組織實施。</p>
+                </div>
+            </div>
+            
+            <div id="content-ppt" style="display:none;">
+                <div class="ppt-slide">
+                    <h3 class="text-primary border-bottom pb-2">都享券：雙平臺模式</h3>
+                    <div class="row mt-4">
+                        <div class="col-6"><div class="p-3 bg-light border rounded"><strong>都享匯 (公共服務)</strong><br>城市文化活動打卡</div></div>
+                        <div class="col-6"><div class="p-3 bg-light border rounded"><strong>都享券 (商業運營)</strong><br>餐飲零售消費聯券</div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -702,7 +605,15 @@
     }
 
     function initSystem(mode) {
-        switchMode(mode);
+        currentMode = mode;
+        const env = document.getElementById('env-label');
+        if(mode === 'huangpu') {
+            env.innerText = "黃埔本地節點";
+            setMap('gz');
+        } else {
+            env.innerText = "大灣區核心節點";
+            setMap('all');
+        }
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     }
 
@@ -715,8 +626,6 @@
         if(id === 'app') document.querySelector('.nav-menu .nav-item:nth-child(3)').classList.add('active');
         if(id === 'gba') document.querySelector('.nav-menu .nav-item:nth-child(4)').classList.add('active');
         document.getElementById('page-header-text').innerText = {'ops':'運營駕駛艙','fin':'資金與營收','app':'用戶端體驗','gba':'粵港澳拓展'}[id];
-        
-        // Resize charts
         if(id==='fin' && profitChart) { profitChart.resize(); pieChart.resize(); }
         if(id==='gba' && gbaChart) { gbaChart.resize(); }
     }
@@ -725,9 +634,8 @@
         currentMode = mode;
         const btnGba = document.getElementById('btn-mode-gba');
         const btnHp = document.getElementById('btn-mode-hp');
-        
-        btnGba.className = mode==='gba' ? 'btn btn-sm btn-primary active' : 'btn btn-sm btn-outline-primary';
-        btnHp.className = mode==='huangpu' ? 'btn btn-sm btn-primary active' : 'btn btn-sm btn-outline-primary';
+        btnGba.className = mode==='gba' ? 'mode-btn active' : 'mode-btn';
+        btnHp.className = mode==='huangpu' ? 'mode-btn active' : 'mode-btn';
         
         setMap(mode === 'huangpu' ? 'gz' : 'all');
         document.getElementById('env-label').innerText = mode==='huangpu' ? '黃埔本地節點' : '大灣區核心節點';
@@ -763,38 +671,23 @@
         setInterval(() => {
             const target = locs[Math.floor(Math.random() * locs.length)];
             const amt = Math.floor(Math.random() * 800) + 50;
-            
-            // 添加列表
-            const row = document.createElement('div');
-            row.style.padding = "10px 20px";
-            row.style.borderBottom = "1px solid #f0f0f0";
-            row.style.fontSize = "0.85rem";
-            row.innerHTML = `<span style="color:#a3aed0;">${new Date().toLocaleTimeString()}</span> <strong>${target}</strong> <span style="float:right; color:#05cd99;">核銷 ¥${amt}</span>`;
-            
+            const row = document.createElement('li');
+            row.className = "feed-item";
+            row.innerHTML = `<span class="text-muted">${new Date().toLocaleTimeString()}</span> <strong>${target}</strong> <span class="text-success">核銷 ¥${amt}</span>`;
             const list = document.getElementById('feed-list');
             list.prepend(row);
             if(list.children.length > 8) list.lastElementChild.remove();
-            
-            // 觸發地圖
             spawnPulse();
-            
-            // 更新總數
             const gmv = document.getElementById('val-gmv');
             let val = parseInt(gmv.innerText.replace(/,/g, ''));
             gmv.innerText = (val + amt).toLocaleString();
-            
         }, 800);
     }
 
-    // Secret
     function openSecret() {
         const pwd = prompt("請輸入訪問密碼 (提示: 8888)");
-        if(pwd === '8888') {
-            document.getElementById('secret-modal').style.display = 'flex';
-            showDoc('contract');
-        } else if (pwd !== null) {
-            alert('密碼錯誤');
-        }
+        if(pwd === '8888') { document.getElementById('secret-modal').style.display = 'flex'; showDoc('contract'); }
+        else if (pwd !== null) { alert('密碼錯誤'); }
     }
     function closeSecret() { document.getElementById('secret-modal').style.display = 'none'; }
     function showDoc(id) {
@@ -804,23 +697,17 @@
         event.target.classList.add('active');
     }
 
-    // Charts & Sim
     function updateSim() {
         const c = parseInt(document.getElementById('slider-cost').value);
         const p = parseInt(document.getElementById('slider-price').value);
         document.getElementById('margin-display').innerText = (p-c).toFixed(1) + "%";
-        
         const m = (p-c)/100;
         const net = [3.6, 7.2, 10.8].map(g => (g*m - 0.1).toFixed(2));
-        
         if(profitChart) { profitChart.data.datasets[0].data = net; profitChart.update(); }
-        
         let html = '';
         ['2025','2026','2027'].forEach((y,i) => {
              const gross = ([3.6,7.2,10.8][i]*m).toFixed(2);
-             const profit = net[i];
-             const growth = i>0 ? '+50%' : '-';
-             html += `<tr><td>${y}</td><td>${[3.6,7.2,10.8][i]}</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${profit}</td><td>${growth}</td></tr>`;
+             html += `<tr><td>${y}</td><td>${[10,20,30][i]}萬</td><td>${[3.6,7.2,10.8][i]}億</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${net[i]}</td></tr>`;
         });
         document.getElementById('finance-tbody').innerHTML = html;
     }
@@ -839,7 +726,7 @@
         });
         gbaChart = new Chart(document.getElementById('gbaChart').getContext('2d'), { 
             type: 'line', 
-            data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{ label: '廣州', data: [10,25,45,60], borderColor: '#3b82f6' }, { label: '香港', data: [0,5,12,20], borderColor: '#8b5cf6' }] }, 
+            data: { labels: ['2025','2026','2027'], datasets: [{ label: '廣州用戶', data: [10,25,45], borderColor: '#3b82f6' }, { label: '香港用戶', data: [0,5,12], borderColor: '#8b5cf6' }] }, 
             options: { responsive: true, maintainAspectRatio: false } 
         });
         updateSim();
