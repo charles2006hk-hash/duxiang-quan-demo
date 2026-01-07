@@ -60,7 +60,7 @@
         .dashboard-grid { 
             display: grid; 
             grid-template-columns: 2fr 1fr; /* 左地圖(2) 右日誌(1) */
-            grid-template-rows: 120px 1fr; /* 上KPI(固定) 下主體(自適應) */
+            grid-template-rows: 140px 1fr; /* 上KPI(固定) 下主體(自適應) */
             gap: 20px; 
             height: calc(100vh - 110px); 
         }
@@ -148,7 +148,7 @@
         .doc-content { flex-grow: 1; padding: 50px; overflow-y: auto; background: #e2e8f0; }
         .doc-btn { display: block; width: 100%; padding: 12px; text-align: left; border: 1px solid transparent; background: transparent; cursor: pointer; border-radius: 6px; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
         .doc-btn:hover { background: #fff; border-color: #cbd5e1; }
-        .doc-btn.active { background: #fff; color: var(--color-primary); border-color: var(--color-primary); font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .doc-btn.active { background: #eff6ff; color: var(--color-primary); border-color: var(--color-primary); font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
         /* A4 Paper */
         .a4-paper { width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 40px; padding: 25mm; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; font-family: 'SimSun', serif; line-height: 1.8; color: #333; position: relative; }
@@ -201,13 +201,13 @@
             <div class="login-icon"><i class="fas fa-map-location-dot"></i></div>
             <h4>黃埔區運營示範</h4>
             <p class="text-muted small">區域級運營 | 科學城/大沙地</p>
-            <span class="badge bg-primary bg-opacity-10 text-primary">區域版</span>
+            <span class="badge bg-primary bg-opacity-10 text-primary mt-3">Regional Demo</span>
         </div>
         <div class="login-card" onclick="startApp('gba')">
             <div class="login-icon"><i class="fas fa-globe-asia"></i></div>
             <h4>大灣區戰略擴展</h4>
             <p class="text-muted small">穗港澳聯動 | 跨境支付</p>
-            <span class="badge bg-purple bg-opacity-10 text-purple">戰略版</span>
+            <span class="badge bg-purple bg-opacity-10 text-purple mt-3" style="color:var(--color-purple)">Strategic Demo</span>
         </div>
     </div>
     <div class="mt-5 text-secondary small text-center opacity-75">
@@ -244,7 +244,7 @@
             </div>
         </div>
 
-        <!-- View 1: 運營駕駛艙 (Requirement 1: KPI Top, Map Bottom, Logs Right) -->
+        <!-- View 1: 運營駕駛艙 (經典佈局) -->
         <div id="view-ops" class="view-section active">
             <div class="dashboard-grid">
                 <!-- Top Row: KPI Cards -->
@@ -288,15 +288,18 @@
                                 <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
+                                <!-- Links -->
                                 <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
                                 <line x1="450" y1="280" x2="300" y2="480" stroke="#fcd34d" stroke-width="2" stroke-dasharray="5,5" />
+                                <!-- Nodes -->
                                 <circle cx="450" cy="280" r="8" fill="#3b82f6" />
-                                <circle cx="680" cy="420" r="6" fill="#7c3aed" />
+                                <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州總部</text>
+                                <circle cx="680" cy="420" r="6" fill="#8b5cf6" />
+                                <text x="690" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
                                 <circle cx="300" cy="480" r="6" fill="#f59e0b" />
-                                <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州</text>
-                                <text x="680" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
                                 <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門</text>
                             </svg>
+                            <!-- HP Map -->
                             <svg id="svg-map-hp" class="svg-map inactive-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
                                 <path class="map-land-hp" d="M250,150 L550,120 L650,250 L600,350 L200,300 Z" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
                                 <text x="400" y="220" text-anchor="middle" fill="#047857" font-weight="bold" font-size="24">科學城核心區</text>
@@ -326,7 +329,7 @@
             </div>
         </div>
 
-        <!-- View 2: 資金營收 (Requirement 4: Added Missing Chart) -->
+        <!-- View 2: 資金營收 (增強版) -->
         <div id="view-fin" class="view-section">
             <div class="finance-grid">
                 <!-- 左：模擬器 -->
@@ -350,7 +353,7 @@
                 
                 <!-- 中：趨勢圖 -->
                 <div class="panel border-green">
-                    <div class="panel-head">月度營收趨勢</div>
+                    <div class="panel-head">年度淨利潤趨勢預測</div>
                     <div class="panel-body p-3">
                         <canvas id="profitChart"></canvas>
                     </div>
@@ -437,12 +440,12 @@
                             <div class="text-center position-relative" style="z-index:1; width:30%;">
                                 <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:40px; height:40px; font-weight:bold;">2</div>
                                 <h5 class="fw-bold text-dark">深港互通期</h5>
-                                <p class="text-muted small">2026 Q1</p>
+                                <p class="text-muted small">2026 Q1 (籌備中)</p>
                             </div>
                             <div class="text-center position-relative" style="z-index:1; width:30%;">
                                 <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:40px; height:40px; font-weight:bold;">3</div>
                                 <h5 class="fw-bold text-dark">大灣區全覆蓋</h5>
-                                <p class="text-muted small">2026 Q3</p>
+                                <p class="text-muted small">2026 Q3 (規劃中)</p>
                             </div>
                         </div>
                     </div>
@@ -454,11 +457,12 @@
                         <div class="panel-head">跨境增長預測表</div>
                         <div class="panel-body p-0 scrollable">
                             <table class="table-custom table-striped">
-                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th></tr></thead>
+                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th><th>結算幣種</th></tr></thead>
                                 <tbody>
-                                    <tr><td>廣州</td><td>5,000</td><td>300,000</td><td>15,000</td></tr>
-                                    <tr><td>香港</td><td>800</td><td>50,000</td><td>2,500</td></tr>
-                                    <tr><td>澳門</td><td>300</td><td>20,000</td><td>1,000</td></tr>
+                                    <tr><td>廣州 (總部)</td><td>5,000</td><td>300,000</td><td>15,000</td><td>CNY</td></tr>
+                                    <tr><td>香港 (拓展)</td><td>800</td><td>50,000</td><td>2,500</td><td>HKD</td></tr>
+                                    <tr><td>澳門 (拓展)</td><td>300</td><td>20,000</td><td>1,000</td><td>MOP</td></tr>
+                                    <tr class="fw-bold bg-light"><td>總計</td><td>6,100</td><td>370,000</td><td>18,500</td><td>多幣種</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -481,77 +485,121 @@
         <div class="doc-nav">
             <h5 class="mb-4 text-primary fw-bold px-2">項目資料庫</h5>
             <button class="doc-btn active" onclick="showDoc('contract')"><i class="fas fa-file-contract me-2"></i>戰略合作協議</button>
+            <button class="doc-btn" onclick="showDoc('ppt')"><i class="fas fa-file-powerpoint me-2"></i>項目演示 PPT</button>
             <button class="doc-btn" onclick="showDoc('cert')"><i class="fas fa-certificate me-2"></i>企業資質榮譽</button>
             <button class="btn btn-outline-danger w-100 mt-5" onclick="closeSecret()">關閉窗口</button>
         </div>
         <div class="doc-content" id="doc-viewer">
+            <!-- 協議全文 (完整6頁內容) -->
             <div id="content-contract">
-                <!-- Page 1 -->
                 <div class="a4-paper">
                     <div class="a4-title">戰略合作框架協議</div>
                     <div class="text-center mb-5 fw-bold fs-5">蟻米集團(國際)有限公司 <br><br> 廣東卓啟雲鏈科技有限公司</div>
                     <div class="text-center">二〇二五年十一月</div>
                     <div class="a4-footer">- PAGE 1 -</div>
                 </div>
-                <!-- Page 2 -->
                 <div class="a4-paper">
-                    <div class="a4-text"><strong>甲方：</strong>廣東卓啟雲鏈科技有限公司<br>法定代表人：張錦喜</div>
-                    <div class="a4-text mt-3"><strong>乙方：</strong>蟻米集團(國際)有限公司<br>法定代表人：林毅</div>
+                    <div class="a4-text"><strong>甲方：</strong>廣東卓啟雲鏈科技有限公司<br>法定代表人：張錦喜<br>地址：廣州市黃埔區廣汕三路31號蟻米孵化器306</div>
+                    <div class="a4-text mt-3"><strong>乙方：</strong>蟻米集團(國際)有限公司<br>法定代表人：林毅<br>地址：香港新界沙田石門新貿中心B座22樓11室</div>
                     <div class="a4-section">一、合作綱領</div>
-                    <div class="a4-text">基於卓啟雲鏈在廣州黃埔區都享券實踐經驗，雙方共同探索實踐商圈新流量經濟模式與工具創新。</div>
+                    <div class="a4-text">基於卓啟雲鏈在廣州黃埔區都享券實踐經驗，雙方共同探索實踐商圈新流量經濟模式與工具創新，提增消費循環和餐飲消費等統一大市場建設，從廣州做起，共同推行“都享券”，推動大灣區基於數字化的電子聯券技術創新及其應用。</div>
                     <div class="a4-section">二、合作宗旨</div>
                     <div class="a4-text">通過雙方緊密合作，打造共贏、可持續發展的戰略合作夥伴關係。</div>
                     <div class="a4-footer">- PAGE 2 -</div>
                 </div>
-                <!-- Page 3 -->
                 <div class="a4-paper">
                     <div class="a4-section">三、合作目標</div>
-                    <div class="a4-text">加強各方能力、資源互補，實現各方未來的市場擴張策略。</div>
+                    <div class="a4-text">通過本次戰略合作，能夠加強各方能力、資源互補，實現各方未來的市場擴張策略並獲得市場份額，並且為各方合作創造更大的商業價值。</div>
                     <div class="a4-section">四、合作內容</div>
-                    <div class="a4-text">1. 由乙方牽頭，引入投資資金，推動“都享券”項目在廣州向珠三角擴張。</div>
-                    <div class="a4-text">2. 雙方應成立協調小組，負責日常溝通。</div>
+                    <div class="a4-text">1. 由乙方牽頭，引入投資資金，推動“都享券”項目在廣州向珠三角擴張。並由甲方引進乙方技術和成功模式，推動、落實香港的運營。雙方在廣州設立合資公司，構建一個大灣區惠民出行消費平臺。</div>
+                    <div class="a4-text">2. 為確保雙方合作的順暢及信息的及時交流，雙方應成立協調小組，負責日常溝通、聯絡、技術支持和運營探討。</div>
+                    <div class="a4-text">3. 在此戰略合作框架下，具體的合作事宜應以獨立合同的方式確立明確的目標、權利、責任、計劃和內容。</div>
                     <div class="a4-section">五、各方權利與義務</div>
-                    <div class="a4-text">1. 甲方權利義務：負責搭建平臺，持有及維護，確保功能正常。</div>
+                    <div class="a4-text">1. 甲方權利義務：</div>
+                    <div class="a4-text">1) 甲方為項目搭建平臺，由甲方持有及維護，甲方需與乙方進行技術對接，確保平臺具備優惠券與停車券的順利發放和使用功能。此外，甲方還需根據項目需求進行系統開發，提供穩定可靠的技術支持。</div>
                     <div class="a4-footer">- PAGE 3 -</div>
                 </div>
-                <!-- Page 4 -->
                 <div class="a4-paper">
-                    <div class="a4-text">2. 乙方權利義務：拓展香港市場，負責營銷、召開商家大會。</div>
+                    <div class="a4-text">2) 利用甲方在票券運營方面的豐富經驗，提供策劃並執行各種吸引消費者的聯合優惠券等票券活動的方案或建議。</div>
+                    <div class="a4-text">3) 平臺數據將受到嚴格的保護，不會被轉移、洩露或提供給任何與本合作無關的第三方。</div>
+                    <div class="a4-text">2. 乙方權利義務：</div>
+                    <div class="a4-text">1) 如拓展香港市場，乙方負責營銷、召開商家大會，呼籲商場內商家參與該平臺活動。</div>
+                    <div class="a4-text">2) 協調商圈內工作人員參與平臺票券方案的培訓。</div>
+                    <div class="a4-text">3) 乙方積極推動商場內商家使用該平臺或指派商場相關運營人員配合甲方進行商家洽談。</div>
                     <div class="a4-section">六、合作期限</div>
                     <div class="a4-text">10年。</div>
                     <div class="a4-section">七、知識產權</div>
-                    <div class="a4-text">各自開發的產品和技術知識產權歸各自擁有。</div>
+                    <div class="a4-text">本次合作前及基於本協議合作項目，屬於雙方各自開發的產品和技術，並由此產生的知識產權由雙方各自擁有。</div>
                     <div class="a4-footer">- PAGE 4 -</div>
                 </div>
-                <!-- Page 5 -->
                 <div class="a4-paper">
                     <div class="a4-section">八、商業秘密保護</div>
-                    <div class="a4-text">雙方應保守合作過程中所知悉的商業秘密。</div>
+                    <div class="a4-text">雙方應保守合作過程中所知悉的對方經營信息、技術信息等商業秘密，不得向任何其他方洩露。該保密義務持續至雙方合作終止後三年。</div>
                     <div class="a4-section">九、生效與終止</div>
-                    <div class="a4-text">1. 本協議自雙方蓋章及授權代表簽字之日起生效。</div>
+                    <div class="a4-text">1、本協議自雙方蓋章及授權代表簽字之日起生效。<br>2、經雙方協商一致並書面同意後可終止或延長本協議。<br>3、合作期間，如發生以下情形，甲乙各方有權單方解除本協議：(1)項目運行的商業模式未能確立；(2)費用結算機制未能達成一致。</div>
                     <div class="a4-section">十、其他</div>
-                    <div class="a4-text">本協議是雙方合作的原則性約定。</div>
+                    <div class="a4-text">本協議是雙方合作的原則性約定，未盡事宜由雙方協商簽訂補充協議。</div>
                     <div class="a4-footer">- PAGE 5 -</div>
                 </div>
-                <!-- Page 6 -->
                 <div class="a4-paper">
-                    <div style="display:flex; justify-content:space-between; margin-top:100px;">
-                        <div>甲方(蓋章)：<br><strong>廣東卓啟</strong><br>代表人：張錦喜</div>
-                        <div>乙方(蓋章)：<br><strong>蟻米集團</strong><br>代表人：林毅</div>
+                    <div style="display:flex; justify-content:space-between; margin-top:50px;">
+                        <div>甲方 (蓋章)：<div class="stamp" style="left:50px;">廣東卓啟</div></div>
+                        <div>乙方 (蓋章)：<div class="stamp" style="right:50px;">蟻米集團</div></div>
+                    </div>
+                    <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:space-between; padding:0 50px;">
+                       <div>授權代表：(簽字)</div>
+                       <div>授權代表：(簽字)</div>
                     </div>
                     <div class="a4-footer">- PAGE 6 -</div>
                 </div>
             </div>
             
+            <!-- PPT 內容 -->
+            <div id="content-ppt" style="display:none;">
+                <div class="ppt-slide">
+                    <h3 class="ppt-title">都享券：雙平臺模式</h3>
+                    <div class="row mt-4">
+                        <div class="col-6"><div class="p-3 bg-light rounded h-100 border">
+                            <h5 class="text-primary">都享匯 (公共服務)</h5>
+                            <p class="small text-muted">城市文化活動打卡、全域數字地圖。引流到地，記錄行跡。</p>
+                        </div></div>
+                        <div class="col-6"><div class="p-3 bg-light rounded h-100 border">
+                            <h5 class="text-success">都享券 (商業運營)</h5>
+                            <p class="small text-muted">餐飲零售消費聯券。引流到店，創造現金流。</p>
+                        </div></div>
+                    </div>
+                </div>
+                <div class="ppt-slide">
+                    <h4 class="mb-4">六位一體數字技術</h4>
+                    <div class="row g-3">
+                        <div class="col-4"><div class="p-3 border rounded text-center">1. 聯合體圖譜</div></div>
+                        <div class="col-4"><div class="p-3 border rounded text-center">2. 數據化通券</div></div>
+                        <div class="col-4"><div class="p-3 border rounded text-center">3. 數字化聯卡</div></div>
+                        <div class="col-4"><div class="p-3 border rounded text-center">4. AI智慧服務</div></div>
+                        <div class="col-4"><div class="p-3 border rounded text-center">5. AI數字人</div></div>
+                        <div class="col-4"><div class="p-3 border rounded text-center">6. 沉浸式遊購</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 證書牆 -->
             <div id="content-cert" style="display:none;">
                 <div class="cert-grid">
-                    <div class="cert-card"><i class="fas fa-certificate text-warning fa-3x mb-3"></i><h4>高新技術企業</h4></div>
-                    <div class="cert-card"><i class="fas fa-award text-warning fa-3x mb-3"></i><h4>專精特新中小企業</h4></div>
+                    <div class="cert-card">
+                        <div class="cert-badge"><i class="fas fa-certificate"></i></div>
+                        <div class="cert-title">高新技術企業</div>
+                        <p>國家級認證 · 證書編號 GR2023...</p>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-badge"><i class="fas fa-award"></i></div>
+                        <div class="cert-title">專精特新中小企業</div>
+                        <p>廣東省工業和信息化廳</p>
+                    </div>
                 </div>
                 <div class="gov-doc mt-4">
                     <div class="gov-head">廣州開發區商務局文件</div>
                     <div class="text-center fw-bold fs-5 mb-4">關於印發《2025 黃埔出彩生活季活動工作方案》的通知</div>
-                    <p>各有關單位：為進一步提振消費，推動全區商業高質量發展，經研究同意，現將工作方案印發給你們，請認真組織實施。</p>
+                    <p>各有關單位：為進一步提振消費，推動全區商業高質量發展，經研究同意，現將工作方案印發給你們，請認真組織實施。支持卓啟雲鏈等企業利用數字化手段打造消費新場景...</p>
                 </div>
             </div>
         </div>
@@ -592,7 +640,15 @@
     }
 
     function initSystem(mode) {
-        switchMode(mode);
+        currentMode = mode;
+        const env = document.getElementById('env-label');
+        if(mode === 'huangpu') {
+            env.innerText = "黃埔本地節點";
+            setMap('gz');
+        } else {
+            env.innerText = "大灣區核心節點";
+            setMap('all');
+        }
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     }
 
@@ -605,18 +661,13 @@
         if(id === 'app') document.querySelector('.nav-menu .nav-item:nth-child(3)').classList.add('active');
         if(id === 'gba') document.querySelector('.nav-menu .nav-item:nth-child(4)').classList.add('active');
         document.getElementById('page-header-text').innerText = {'ops':'運營駕駛艙','fin':'資金與營收','app':'用戶端體驗','gba':'粵港澳拓展'}[id];
+        
+        // Resize charts
         if(id==='fin' && profitChart) { profitChart.resize(); pieChart.resize(); }
         if(id==='gba' && gbaChart) { gbaChart.resize(); }
     }
 
-    function switchMode(mode) {
-        currentMode = mode;
-        const btnGba = document.getElementById('btn-mode-gba');
-        const btnHp = document.getElementById('btn-mode-hp');
-        setMap(mode === 'huangpu' ? 'gz' : 'all');
-        document.getElementById('env-label').innerText = mode==='huangpu' ? '黃埔本地節點' : '大灣區核心節點';
-    }
-
+    // Map & Data
     function setMap(region) {
         const gba = document.getElementById('svg-map-gba');
         const hp = document.getElementById('svg-map-hp');
@@ -642,8 +693,7 @@
     }
 
     function startLiveFeed() {
-        if(feedInterval) clearInterval(feedInterval);
-        feedInterval = setInterval(() => {
+        setInterval(() => {
             const target = locs[Math.floor(Math.random() * locs.length)];
             const amt = Math.floor(Math.random() * 800) + 50;
             const row = document.createElement('li');
@@ -653,21 +703,29 @@
             list.prepend(row);
             if(list.children.length > 8) list.lastElementChild.remove();
             spawnPulse();
+            const gmv = document.getElementById('val-gmv');
+            let val = parseInt(gmv.innerText.replace(/,/g, ''));
+            gmv.innerText = (val + amt).toLocaleString();
         }, 800);
     }
 
+    // Secret
     function openSecret() {
         const pwd = prompt("請輸入訪問密碼 (提示: 8888)");
-        if(pwd === '8888') { document.getElementById('secret-modal').style.display = 'flex'; showDoc('contract'); }
+        if(pwd === '8888') {
+            document.getElementById('secret-modal').style.display = 'flex';
+            showDoc('contract');
+        } else if (pwd !== null) { alert('密碼錯誤'); }
     }
     function closeSecret() { document.getElementById('secret-modal').style.display = 'none'; }
     function showDoc(id) {
-        ['contract','cert'].forEach(i => document.getElementById('content-'+i).style.display = 'none');
+        ['contract','ppt','cert'].forEach(i => document.getElementById('content-'+i).style.display = 'none');
         document.getElementById('content-'+id).style.display = 'block';
         document.querySelectorAll('.doc-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
     }
 
+    // Charts & Sim
     function updateSim() {
         const c = parseInt(document.getElementById('slider-cost').value);
         const p = parseInt(document.getElementById('slider-price').value);
@@ -680,7 +738,9 @@
         let html = '';
         ['2025','2026','2027'].forEach((y,i) => {
              const gross = ([3.6,7.2,10.8][i]*m).toFixed(2);
-             html += `<tr class="table-row-stripe"><td>${y}</td><td>${[10,20,30][i]}</td><td>${[3.6,7.2,10.8][i]}</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${net[i]}</td></tr>`;
+             const profit = net[i];
+             const growth = i>0 ? '+50%' : '-';
+             html += `<tr><td>${y}</td><td>${[3.6,7.2,10.8][i]}</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${profit}</td><td>${growth}</td></tr>`;
         });
         document.getElementById('finance-tbody').innerHTML = html;
     }
