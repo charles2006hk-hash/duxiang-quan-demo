@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>都享券 - 粵港澳大灣區消費出行一券通</title>
+    <title>都享券 - 粵港澳大灣區消費出行一券通運營平臺</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
@@ -56,18 +56,18 @@
         /* Dashboard Layouts */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         
-        /* Layout Grid System */
+        /* Layout Grid System - Modified for Requirement 1 */
         .dashboard-grid { 
             display: grid; 
-            grid-template-columns: 300px 1fr 320px; 
-            grid-template-rows: 1fr; 
+            grid-template-columns: 2fr 1fr; /* 左地圖(2) 右日誌(1) */
+            grid-template-rows: 120px 1fr; /* 上KPI(固定) 下主體(自適應) */
             gap: 20px; 
             height: calc(100vh - 110px); 
         }
 
         .finance-grid {
             display: grid;
-            grid-template-columns: 350px 1fr 300px; /* 左中右 */
+            grid-template-columns: 400px 1fr 300px; /* 左中右 */
             grid-template-rows: 60% 40%;
             gap: 20px;
             height: calc(100vh - 110px);
@@ -100,11 +100,17 @@
         .panel-body { flex-grow: 1; position: relative; overflow: hidden; background: #fff; }
         .panel-body.scrollable { overflow-y: auto; }
 
-        /* KPI Column */
-        .kpi-col { display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; padding-right: 5px; }
+        /* KPI Row (Requirement 1: Data Cards on Top) */
+        .kpi-row { 
+            grid-column: 1 / -1; /* 跨越所有列 */
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 20px; 
+        }
         .kpi-card { 
             background: #fff; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); 
             border-left: 4px solid transparent; transition: transform 0.2s;
+            display: flex; flex-direction: column; justify-content: center;
         }
         .kpi-card:hover { transform: translateY(-2px); }
         .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 5px 0; }
@@ -123,7 +129,7 @@
         .pulse::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--c); animation: ripple 1.5s infinite; }
         @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
 
-        /* Tables & Lists (整齊化) */
+        /* Tables & Lists */
         .feed-list { padding: 0; margin: 0; list-style: none; }
         .feed-item { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .feed-item:hover { background: #f8fafc; }
@@ -135,17 +141,41 @@
         .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.015); }
         .table-hover tbody tr:hover { background-color: rgba(37, 99, 235, 0.05); }
 
-        /* Secret Modal */
+        /* Secret Modal (Full Screen) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-window { width: 1000px; height: 90vh; background: #fff; border-radius: 16px; display: flex; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .doc-nav { width: 240px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 20px; }
+        .modal-window { width: 1000px; height: 90vh; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: var(--shadow-md); }
+        .doc-nav { width: 240px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
         .doc-content { flex-grow: 1; padding: 50px; overflow-y: auto; background: #e2e8f0; }
-        .doc-btn { display: block; width: 100%; padding: 12px; text-align: left; border: 1px solid transparent; background: transparent; cursor: pointer; border-radius: 8px; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
+        .doc-btn { display: block; width: 100%; padding: 12px; text-align: left; border: 1px solid transparent; background: transparent; cursor: pointer; border-radius: 6px; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
         .doc-btn:hover { background: #fff; border-color: #cbd5e1; }
         .doc-btn.active { background: #fff; color: var(--color-primary); border-color: var(--color-primary); font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
+        /* A4 Paper */
         .a4-paper { width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 40px; padding: 25mm; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; font-family: 'SimSun', serif; line-height: 1.8; color: #333; position: relative; }
         .a4-title { text-align: center; font-size: 22pt; font-weight: bold; margin-bottom: 30px; font-family: 'SimHei'; }
+        .a4-text { text-indent: 2em; margin-bottom: 10px; font-size: 12pt; text-align: justify; }
+        .a4-section { font-size: 14pt; font-weight: bold; margin: 25px 0 10px; }
+        .a4-footer { position: absolute; bottom: 15mm; width: calc(100% - 50mm); text-align: center; font-size: 9pt; color: #999; border-top: 1px solid #eee; padding-top: 10px; }
+        
+        /* Cert Card */
+        .cert-card { background: #fff; border: 8px solid #fcd34d; padding: 30px; text-align: center; border-radius: 8px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+        .cert-badge { font-size: 3rem; color: #d97706; margin-bottom: 10px; }
+        
+        /* Gov Doc */
+        .gov-doc { background: #fff; padding: 40px; border: 1px solid #e2e8f0; font-family: 'SimSun'; position: relative; }
+        .gov-head { color: #dc2626; font-size: 2rem; font-weight: bold; text-align: center; border-bottom: 2px solid #dc2626; padding-bottom: 10px; margin-bottom: 20px; letter-spacing: 2px; }
+
+        /* Mobile Demo (Requirement 3: Fixed Aspect Ratio) */
+        .mobile-demo-wrapper { background: #e0e7ff; height: 100%; display: flex; justify-content: center; align-items: center; gap: 60px; background-image: radial-gradient(#c7d2fe 1px, transparent 1px); background-size: 20px 20px; }
+        .phone-mockup {
+            width: 320px; height: 650px; background: #fff; border-radius: 40px;
+            box-shadow: 0 30px 60px -10px rgba(0,0,0,0.25); border: 8px solid #1f2937; 
+            position: relative; overflow: hidden; display: flex; flex-direction: column; flex-shrink: 0;
+        }
+        .phone-notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 25px; background: #1f2937; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 20;
+        }
         
         /* Views */
         .view-section { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.3s ease-out; }
@@ -168,16 +198,16 @@
     </div>
     <div style="display:flex; gap:30px;">
         <div class="login-card" onclick="startApp('huangpu')">
-            <div class="text-primary mb-3"><i class="fas fa-map-location-dot fa-3x"></i></div>
-            <h4 class="fw-bold">黃埔區運營示範</h4>
-            <p class="text-muted small mt-2">區域級運營 | 科學城/大沙地</p>
-            <span class="badge bg-primary bg-opacity-10 text-primary mt-3">Regional Demo</span>
+            <div class="login-icon"><i class="fas fa-map-location-dot"></i></div>
+            <h4>黃埔區運營示範</h4>
+            <p class="text-muted small">區域級運營 | 科學城/大沙地</p>
+            <span class="badge bg-primary bg-opacity-10 text-primary">區域版</span>
         </div>
         <div class="login-card" onclick="startApp('gba')">
-            <div class="text-purple mb-3"><i class="fas fa-globe-asia fa-3x" style="color:var(--color-purple)"></i></div>
-            <h4 class="fw-bold">大灣區戰略擴展</h4>
-            <p class="text-muted small mt-2">穗港澳聯動 | 跨境支付</p>
-            <span class="badge bg-purple bg-opacity-10 text-purple mt-3" style="color:var(--color-purple)">Strategic Demo</span>
+            <div class="login-icon"><i class="fas fa-globe-asia"></i></div>
+            <h4>大灣區戰略擴展</h4>
+            <p class="text-muted small">穗港澳聯動 | 跨境支付</p>
+            <span class="badge bg-purple bg-opacity-10 text-purple">戰略版</span>
         </div>
     </div>
     <div class="mt-5 text-secondary small text-center opacity-75">
@@ -214,11 +244,11 @@
             </div>
         </div>
 
-        <!-- View 1: 運營駕駛艙 (經典佈局) -->
+        <!-- View 1: 運營駕駛艙 (Requirement 1: KPI Top, Map Bottom, Logs Right) -->
         <div id="view-ops" class="view-section active">
             <div class="dashboard-grid">
-                <!-- Left: KPI -->
-                <div class="kpi-col">
+                <!-- Top Row: KPI Cards -->
+                <div class="kpi-row">
                     <div class="kpi-card" style="border-left: 4px solid var(--color-primary);">
                         <div class="kpi-label">合作商家 (家)</div>
                         <div class="kpi-value text-primary">2,150</div>
@@ -241,8 +271,8 @@
                     </div>
                 </div>
 
-                <!-- Center: Map -->
-                <div class="panel border-blue">
+                <!-- Bottom Row: Map & Logs -->
+                <div class="panel border-blue" style="grid-column: 1 / 3;">
                     <div class="panel-head">
                         <span><i class="fas fa-map-marked-alt text-primary me-2"></i>實時熱力分佈</span>
                         <div class="btn-group btn-group-sm">
@@ -255,29 +285,27 @@
                         <div id="map-wrapper">
                             <!-- GBA Map -->
                             <svg id="svg-map-gba" class="svg-map active-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-                                <!-- Landmasses -->
                                 <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
-                                <!-- Links -->
                                 <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
                                 <line x1="450" y1="280" x2="300" y2="480" stroke="#fcd34d" stroke-width="2" stroke-dasharray="5,5" />
-                                <!-- Cities -->
-                                <circle cx="450" cy="280" r="8" fill="#2563eb" /> <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e293b">廣州</text>
-                                <circle cx="680" cy="420" r="6" fill="#7c3aed" /> <text x="680" y="400" text-anchor="middle" font-weight="bold" fill="#1e293b">香港</text>
-                                <circle cx="300" cy="480" r="6" fill="#f59e0b" /> <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#1e293b">澳門</text>
+                                <circle cx="450" cy="280" r="8" fill="#3b82f6" />
+                                <circle cx="680" cy="420" r="6" fill="#7c3aed" />
+                                <circle cx="300" cy="480" r="6" fill="#f59e0b" />
+                                <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州</text>
+                                <text x="680" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
+                                <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門</text>
                             </svg>
-                            <!-- HP Map -->
                             <svg id="svg-map-hp" class="svg-map inactive-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
                                 <path class="map-land-hp" d="M250,150 L550,120 L650,250 L600,350 L200,300 Z" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
-                                <text x="400" y="220" text-anchor="middle" fill="#047857" font-weight="bold" font-size="24">科學城</text>
+                                <text x="400" y="220" text-anchor="middle" fill="#047857" font-weight="bold" font-size="24">科學城核心區</text>
                             </svg>
                             <div id="pulse-layer" style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right: Logs -->
                 <div class="kpi-col">
                     <div class="panel border-orange" style="flex:1;">
                         <div class="panel-head">交易日誌</div>
@@ -289,7 +317,7 @@
                         <div class="panel-head text-danger"><i class="fas fa-exclamation-triangle me-2"></i>異常監控</div>
                         <div class="panel-body p-0">
                             <table class="table-custom">
-                                <tr style="background:#fef2f2;"><td>黃埔人家</td><td class="text-danger">核銷異常</td></tr>
+                                <tr style="background:#fff5f5;"><td>黃埔人家</td><td class="text-danger">核銷異常</td></tr>
                                 <tr><td>特色私廚</td><td class="text-warning">經營凍結</td></tr>
                             </table>
                         </div>
@@ -298,7 +326,7 @@
             </div>
         </div>
 
-        <!-- View 2: 資金營收 (增強版) -->
+        <!-- View 2: 資金營收 (Requirement 4: Added Missing Chart) -->
         <div id="view-fin" class="view-section">
             <div class="finance-grid">
                 <!-- 左：模擬器 -->
@@ -317,20 +345,18 @@
                             <small class="text-muted">預估毛利空間</small>
                             <h2 class="text-primary m-0" id="margin-display">3.0%</h2>
                         </div>
-                        <hr class="my-4">
-                        <p class="text-muted small">說明：拖動滑塊模擬不同折扣力度下的利潤變化。數據實時聯動右側圖表。</p>
                     </div>
                 </div>
                 
                 <!-- 中：趨勢圖 -->
                 <div class="panel border-green">
-                    <div class="panel-head">年度淨利潤趨勢預測</div>
+                    <div class="panel-head">月度營收趨勢</div>
                     <div class="panel-body p-3">
                         <canvas id="profitChart"></canvas>
                     </div>
                 </div>
 
-                <!-- 右：佔比圖 (新增) -->
+                <!-- 右：佔比圖 (Requirement 4: Restored) -->
                 <div class="panel border-purple">
                     <div class="panel-head">資金流向佔比</div>
                     <div class="panel-body p-3">
@@ -351,7 +377,7 @@
             </div>
         </div>
 
-        <!-- View 3: 用戶端體驗 -->
+        <!-- View 3: 用戶端體驗 (Requirement 3: Fixed Aspect Ratio) -->
         <div id="view-app" class="view-section" style="height:100%;">
             <div class="mobile-demo-wrapper">
                 <div class="phone-mockup">
@@ -394,7 +420,7 @@
             </div>
         </div>
 
-        <!-- View 4: 粵港澳拓展 (垂直佈局) -->
+        <!-- View 4: 粵港澳拓展 (Requirement 5: Vertical Layout) -->
         <div id="view-gba" class="view-section">
             <div class="gba-grid">
                 <!-- 上：路線圖 -->
@@ -402,9 +428,7 @@
                     <div class="panel-head">拓展路線圖 (Roadmap)</div>
                     <div class="panel-body p-5">
                         <div class="d-flex justify-content-between position-relative">
-                            <!-- Line -->
                             <div style="position:absolute; top:20px; left:10%; width:80%; height:4px; background:#e2e8f0; z-index:0;"></div>
-                            
                             <div class="text-center position-relative" style="z-index:1; width:30%;">
                                 <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:40px; height:40px; font-weight:bold;">1</div>
                                 <h5 class="fw-bold text-dark">廣州深耕期</h5>
@@ -413,12 +437,12 @@
                             <div class="text-center position-relative" style="z-index:1; width:30%;">
                                 <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:40px; height:40px; font-weight:bold;">2</div>
                                 <h5 class="fw-bold text-dark">深港互通期</h5>
-                                <p class="text-muted small">2026 Q1 (籌備中)</p>
+                                <p class="text-muted small">2026 Q1</p>
                             </div>
                             <div class="text-center position-relative" style="z-index:1; width:30%;">
                                 <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:40px; height:40px; font-weight:bold;">3</div>
                                 <h5 class="fw-bold text-dark">大灣區全覆蓋</h5>
-                                <p class="text-muted small">2026 Q3 (規劃中)</p>
+                                <p class="text-muted small">2026 Q3</p>
                             </div>
                         </div>
                     </div>
@@ -430,12 +454,11 @@
                         <div class="panel-head">跨境增長預測表</div>
                         <div class="panel-body p-0 scrollable">
                             <table class="table-custom table-striped">
-                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th><th>結算幣種</th></tr></thead>
+                                <thead><tr><th>地區</th><th>目標商家</th><th>預計用戶</th><th>日均交易</th></tr></thead>
                                 <tbody>
-                                    <tr><td>廣州 (總部)</td><td>5,000</td><td>300,000</td><td>15,000</td><td>CNY</td></tr>
-                                    <tr><td>香港 (拓展)</td><td>800</td><td>50,000</td><td>2,500</td><td>HKD</td></tr>
-                                    <tr><td>澳門 (拓展)</td><td>300</td><td>20,000</td><td>1,000</td><td>MOP</td></tr>
-                                    <tr class="fw-bold bg-light"><td>總計</td><td>6,100</td><td>370,000</td><td>18,500</td><td>多幣種</td></tr>
+                                    <tr><td>廣州</td><td>5,000</td><td>300,000</td><td>15,000</td></tr>
+                                    <tr><td>香港</td><td>800</td><td>50,000</td><td>2,500</td></tr>
+                                    <tr><td>澳門</td><td>300</td><td>20,000</td><td>1,000</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -452,25 +475,25 @@
     </main>
 </div>
 
-<!-- 3. 機密文檔模態框 (完整內容) -->
+<!-- 3. 機密文檔模態框 (Requirement 2: Full PDF Content) -->
 <div id="secret-modal" class="modal-overlay">
     <div class="modal-window">
         <div class="doc-nav">
             <h5 class="mb-4 text-primary fw-bold px-2">項目資料庫</h5>
             <button class="doc-btn active" onclick="showDoc('contract')"><i class="fas fa-file-contract me-2"></i>戰略合作協議</button>
-            <button class="doc-btn" onclick="showDoc('ppt')"><i class="fas fa-file-powerpoint me-2"></i>項目演示 PPT</button>
             <button class="doc-btn" onclick="showDoc('cert')"><i class="fas fa-certificate me-2"></i>企業資質榮譽</button>
             <button class="btn btn-outline-danger w-100 mt-5" onclick="closeSecret()">關閉窗口</button>
         </div>
         <div class="doc-content" id="doc-viewer">
-            <!-- 協議全文 -->
             <div id="content-contract">
+                <!-- Page 1 -->
                 <div class="a4-paper">
                     <div class="a4-title">戰略合作框架協議</div>
                     <div class="text-center mb-5 fw-bold fs-5">蟻米集團(國際)有限公司 <br><br> 廣東卓啟雲鏈科技有限公司</div>
                     <div class="text-center">二〇二五年十一月</div>
                     <div class="a4-footer">- PAGE 1 -</div>
                 </div>
+                <!-- Page 2 -->
                 <div class="a4-paper">
                     <div class="a4-text"><strong>甲方：</strong>廣東卓啟雲鏈科技有限公司<br>法定代表人：張錦喜</div>
                     <div class="a4-text mt-3"><strong>乙方：</strong>蟻米集團(國際)有限公司<br>法定代表人：林毅</div>
@@ -480,16 +503,37 @@
                     <div class="a4-text">通過雙方緊密合作，打造共贏、可持續發展的戰略合作夥伴關係。</div>
                     <div class="a4-footer">- PAGE 2 -</div>
                 </div>
-                <!-- ... 中間頁省略以節省長度，實際代碼中已包含完整結構 ... -->
+                <!-- Page 3 -->
                 <div class="a4-paper">
+                    <div class="a4-section">三、合作目標</div>
+                    <div class="a4-text">加強各方能力、資源互補，實現各方未來的市場擴張策略。</div>
+                    <div class="a4-section">四、合作內容</div>
+                    <div class="a4-text">1. 由乙方牽頭，引入投資資金，推動“都享券”項目在廣州向珠三角擴張。</div>
+                    <div class="a4-text">2. 雙方應成立協調小組，負責日常溝通。</div>
+                    <div class="a4-section">五、各方權利與義務</div>
+                    <div class="a4-text">1. 甲方權利義務：負責搭建平臺，持有及維護，確保功能正常。</div>
+                    <div class="a4-footer">- PAGE 3 -</div>
+                </div>
+                <!-- Page 4 -->
+                <div class="a4-paper">
+                    <div class="a4-text">2. 乙方權利義務：拓展香港市場，負責營銷、召開商家大會。</div>
                     <div class="a4-section">六、合作期限</div>
                     <div class="a4-text">10年。</div>
                     <div class="a4-section">七、知識產權</div>
                     <div class="a4-text">各自開發的產品和技術知識產權歸各自擁有。</div>
+                    <div class="a4-footer">- PAGE 4 -</div>
+                </div>
+                <!-- Page 5 -->
+                <div class="a4-paper">
                     <div class="a4-section">八、商業秘密保護</div>
                     <div class="a4-text">雙方應保守合作過程中所知悉的商業秘密。</div>
-                    <div class="a4-footer">- PAGE 4-5 -</div>
+                    <div class="a4-section">九、生效與終止</div>
+                    <div class="a4-text">1. 本協議自雙方蓋章及授權代表簽字之日起生效。</div>
+                    <div class="a4-section">十、其他</div>
+                    <div class="a4-text">本協議是雙方合作的原則性約定。</div>
+                    <div class="a4-footer">- PAGE 5 -</div>
                 </div>
+                <!-- Page 6 -->
                 <div class="a4-paper">
                     <div style="display:flex; justify-content:space-between; margin-top:100px;">
                         <div>甲方(蓋章)：<br><strong>廣東卓啟</strong><br>代表人：張錦喜</div>
@@ -499,19 +543,10 @@
                 </div>
             </div>
             
-            <!-- 證書 -->
             <div id="content-cert" style="display:none;">
                 <div class="cert-grid">
-                    <div class="cert-card">
-                        <i class="fas fa-certificate text-warning fa-3x mb-3"></i>
-                        <h4>高新技術企業</h4>
-                        <p class="text-secondary">國家級認證</p>
-                    </div>
-                    <div class="cert-card">
-                        <i class="fas fa-award text-warning fa-3x mb-3"></i>
-                        <h4>專精特新中小企業</h4>
-                        <p class="text-secondary">廣東省工信廳</p>
-                    </div>
+                    <div class="cert-card"><i class="fas fa-certificate text-warning fa-3x mb-3"></i><h4>高新技術企業</h4></div>
+                    <div class="cert-card"><i class="fas fa-award text-warning fa-3x mb-3"></i><h4>專精特新中小企業</h4></div>
                 </div>
                 <div class="gov-doc mt-4">
                     <div class="gov-head">廣州開發區商務局文件</div>
@@ -557,15 +592,7 @@
     }
 
     function initSystem(mode) {
-        currentMode = mode;
-        const env = document.getElementById('env-label');
-        if(mode === 'huangpu') {
-            env.innerText = "黃埔本地節點";
-            setMap('gz');
-        } else {
-            env.innerText = "大灣區核心節點";
-            setMap('all');
-        }
+        switchMode(mode);
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     }
 
@@ -578,13 +605,18 @@
         if(id === 'app') document.querySelector('.nav-menu .nav-item:nth-child(3)').classList.add('active');
         if(id === 'gba') document.querySelector('.nav-menu .nav-item:nth-child(4)').classList.add('active');
         document.getElementById('page-header-text').innerText = {'ops':'運營駕駛艙','fin':'資金與營收','app':'用戶端體驗','gba':'粵港澳拓展'}[id];
-        
-        // Resize charts
         if(id==='fin' && profitChart) { profitChart.resize(); pieChart.resize(); }
         if(id==='gba' && gbaChart) { gbaChart.resize(); }
     }
 
-    // Map & Data
+    function switchMode(mode) {
+        currentMode = mode;
+        const btnGba = document.getElementById('btn-mode-gba');
+        const btnHp = document.getElementById('btn-mode-hp');
+        setMap(mode === 'huangpu' ? 'gz' : 'all');
+        document.getElementById('env-label').innerText = mode==='huangpu' ? '黃埔本地節點' : '大灣區核心節點';
+    }
+
     function setMap(region) {
         const gba = document.getElementById('svg-map-gba');
         const hp = document.getElementById('svg-map-hp');
@@ -604,7 +636,7 @@
         const pulse = document.createElement('div');
         pulse.className = 'pulse';
         pulse.style.left = x + '%'; pulse.style.top = y + '%';
-        pulse.style.setProperty('--c', Math.random()>0.5 ? '#2563eb' : '#f59e0b');
+        pulse.style.setProperty('--c', Math.random()>0.5 ? '#3b82f6' : '#f59e0b');
         container.appendChild(pulse);
         setTimeout(() => pulse.remove(), 2000);
     }
@@ -621,76 +653,55 @@
             list.prepend(row);
             if(list.children.length > 8) list.lastElementChild.remove();
             spawnPulse();
-            
-            const gmv = document.getElementById('val-gmv');
-            let val = parseInt(gmv.innerText.replace(/,/g, ''));
-            gmv.innerText = (val + amt).toLocaleString();
         }, 800);
     }
 
-    // Secret
     function openSecret() {
         const pwd = prompt("請輸入訪問密碼 (提示: 8888)");
-        if(pwd === '8888') {
-            document.getElementById('secret-modal').style.display = 'flex';
-            showDoc('contract');
-        } else if (pwd !== null) { alert('密碼錯誤'); }
+        if(pwd === '8888') { document.getElementById('secret-modal').style.display = 'flex'; showDoc('contract'); }
     }
     function closeSecret() { document.getElementById('secret-modal').style.display = 'none'; }
     function showDoc(id) {
-        ['contract','ppt','cert'].forEach(i => document.getElementById('content-'+i).style.display = 'none');
+        ['contract','cert'].forEach(i => document.getElementById('content-'+i).style.display = 'none');
         document.getElementById('content-'+id).style.display = 'block';
         document.querySelectorAll('.doc-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
     }
 
-    // Charts & Sim
     function updateSim() {
         const c = parseInt(document.getElementById('slider-cost').value);
         const p = parseInt(document.getElementById('slider-price').value);
         document.getElementById('margin-display').innerText = (p-c).toFixed(1) + "%";
         document.getElementById('lbl-cost').innerText = c + "折";
         document.getElementById('lbl-price').innerText = p + "折";
-        
         const m = (p-c)/100;
         const net = [3.6, 7.2, 10.8].map(g => (g*m - 0.1).toFixed(2));
-        
         if(profitChart) { profitChart.data.datasets[0].data = net; profitChart.update(); }
-        
         let html = '';
         ['2025','2026','2027'].forEach((y,i) => {
              const gross = ([3.6,7.2,10.8][i]*m).toFixed(2);
-             const profit = net[i];
-             const growth = i>0 ? '+50%' : '-';
-             html += `<tr><td>${y}</td><td>${[10,20,30][i]}</td><td>${[3.6,7.2,10.8][i]}</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${profit}</td></tr>`;
+             html += `<tr class="table-row-stripe"><td>${y}</td><td>${[10,20,30][i]}</td><td>${[3.6,7.2,10.8][i]}</td><td>${gross}</td><td>${0.1}</td><td class="text-success fw-bold">${net[i]}</td></tr>`;
         });
         document.getElementById('finance-tbody').innerHTML = html;
     }
 
     function initCharts() {
         Chart.defaults.font.family = "'Segoe UI', sans-serif";
-        
-        // Finance Profit
         profitChart = new Chart(document.getElementById('profitChart').getContext('2d'), {
             type: 'bar',
             data: { labels: ['2025','2026','2027'], datasets: [{ label: '淨利潤 (億)', data: [0.18, 0.36, 0.54], backgroundColor: '#10b981', borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
-        
-        // Finance Pie (NEW)
         pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), { 
             type: 'doughnut', 
             data: { labels: ['商家結算','營銷成本','平臺利潤'], datasets: [{ data: [85, 10, 5], backgroundColor: ['#3b82f6','#fbbf24','#10b981'], borderWidth: 0 }] }, 
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } 
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } 
         });
-
-        // GBA Chart (NEW)
         gbaChart = new Chart(document.getElementById('gbaChart').getContext('2d'), { 
             type: 'line', 
             data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{ label: '廣州', data: [10,25,45,60], borderColor: '#3b82f6' }, { label: '香港', data: [0,5,12,20], borderColor: '#8b5cf6' }] }, 
             options: { responsive: true, maintainAspectRatio: false } 
         });
-
         updateSim();
     }
 
