@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            /* V17 專業商務配色 */
+            /* V18 專業商務配色 */
             --bg-body: #f1f5f9;
             --text-dark: #0f172a;
             --text-muted: #64748b;
@@ -56,11 +56,11 @@
         /* Dashboard Layouts */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         
-        /* Layout Grid System - Modified for Requirement 1 */
+        /* Layout Grid System - V18 Modified: Back to 3-Column Layout */
         .dashboard-grid { 
             display: grid; 
-            grid-template-columns: 2fr 1fr; /* 左地圖(2) 右日誌(1) */
-            grid-template-rows: 140px 1fr; /* 上KPI(固定) 下主體(自適應) */
+            grid-template-columns: 300px 1fr 320px; /* 左KPI - 中地圖 - 右日誌 */
+            grid-template-rows: 1fr; 
             gap: 20px; 
             height: calc(100vh - 110px); 
         }
@@ -80,7 +80,7 @@
             height: calc(100vh - 110px);
         }
         
-        /* Panels - 增強樣式 */
+        /* Panels */
         .panel { 
             background: #fff; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); 
             display: flex; flex-direction: column; overflow: hidden; height: 100%; border: 1px solid #e2e8f0;
@@ -92,6 +92,7 @@
         .panel.border-green { border-top: 4px solid var(--color-success); }
         .panel.border-purple { border-top: 4px solid var(--color-purple); }
         .panel.border-orange { border-top: 4px solid var(--color-warning); }
+        .panel.border-red { border-top: 4px solid var(--color-danger); }
 
         .panel-head { 
             padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 1rem; color: var(--text-dark);
@@ -100,12 +101,14 @@
         .panel-body { flex-grow: 1; position: relative; overflow: hidden; background: #fff; }
         .panel-body.scrollable { overflow-y: auto; }
 
-        /* KPI Row (Requirement 1: Data Cards on Top) */
-        .kpi-row { 
-            grid-column: 1 / -1; /* 跨越所有列 */
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 20px; 
+        /* KPI Column (Modified for V18 Layout) */
+        .kpi-col { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            height: 100%; 
+            overflow-y: auto; 
+            padding-right: 2px;
         }
         .kpi-card { 
             background: #fff; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); 
@@ -117,7 +120,7 @@
         .kpi-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Map */
-        #map-wrapper { width: 100%; height: 100%; position: relative; background: #f8fafc; overflow: hidden; }
+        #map-wrapper { width: 100%; height: 100%; position: relative; background: #f8fafc; overflow: hidden; border-radius: 12px; }
         .svg-map { width: 100%; height: 100%; position: absolute; transition: opacity 0.5s; top: 0; left: 0; }
         .active-map { opacity: 1; z-index: 10; pointer-events: auto; }
         .inactive-map { opacity: 0; z-index: 0; pointer-events: none; }
@@ -165,7 +168,7 @@
         .gov-doc { background: #fff; padding: 40px; border: 1px solid #e2e8f0; font-family: 'SimSun'; position: relative; }
         .gov-head { color: #dc2626; font-size: 2rem; font-weight: bold; text-align: center; border-bottom: 2px solid #dc2626; padding-bottom: 10px; margin-bottom: 20px; letter-spacing: 2px; }
 
-        /* Mobile Demo (Requirement 3: Fixed Aspect Ratio) */
+        /* Mobile Demo (UI Fixed) */
         .mobile-demo-wrapper { background: #e0e7ff; height: 100%; display: flex; justify-content: center; align-items: center; gap: 60px; background-image: radial-gradient(#c7d2fe 1px, transparent 1px); background-size: 20px 20px; }
         .phone-mockup {
             width: 320px; height: 650px; background: #fff; border-radius: 40px;
@@ -244,11 +247,11 @@
             </div>
         </div>
 
-        <!-- View 1: 運營駕駛艙 (經典佈局) -->
+        <!-- View 1: 運營駕駛艙 (Classic Layout Restored) -->
         <div id="view-ops" class="view-section active">
             <div class="dashboard-grid">
-                <!-- Top Row: KPI Cards -->
-                <div class="kpi-row">
+                <!-- Left: KPI Column -->
+                <div class="kpi-col" style="grid-column: 1;">
                     <div class="kpi-card" style="border-left: 4px solid var(--color-primary);">
                         <div class="kpi-label">合作商家 (家)</div>
                         <div class="kpi-value text-primary">2,150</div>
@@ -271,8 +274,8 @@
                     </div>
                 </div>
 
-                <!-- Bottom Row: Map & Logs -->
-                <div class="panel border-blue" style="grid-column: 1 / 3;">
+                <!-- Center: Map (Large Area) -->
+                <div class="panel border-blue" style="grid-column: 2;">
                     <div class="panel-head">
                         <span><i class="fas fa-map-marked-alt text-primary me-2"></i>實時熱力分佈</span>
                         <div class="btn-group btn-group-sm">
@@ -294,7 +297,7 @@
                                 <!-- Nodes -->
                                 <circle cx="450" cy="280" r="8" fill="#3b82f6" />
                                 <text x="450" y="260" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="14">廣州總部</text>
-                                <circle cx="680" cy="420" r="6" fill="#8b5cf6" />
+                                <circle cx="680" cy="420" r="6" fill="#7c3aed" />
                                 <text x="690" y="400" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="12">香港</text>
                                 <circle cx="300" cy="480" r="6" fill="#f59e0b" />
                                 <text x="300" y="520" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="12">澳門</text>
@@ -309,7 +312,8 @@
                     </div>
                 </div>
 
-                <div class="kpi-col">
+                <!-- Right: Logs & Risk -->
+                <div class="kpi-col" style="grid-column: 3;">
                     <div class="panel border-orange" style="flex:1;">
                         <div class="panel-head">交易日誌</div>
                         <div class="panel-body" style="overflow-y:auto;">
@@ -320,7 +324,7 @@
                         <div class="panel-head text-danger"><i class="fas fa-exclamation-triangle me-2"></i>異常監控</div>
                         <div class="panel-body p-0">
                             <table class="table-custom">
-                                <tr style="background:#fff5f5;"><td>黃埔人家</td><td class="text-danger">核銷異常</td></tr>
+                                <tr style="background:#fef2f2;"><td>黃埔人家</td><td class="text-danger">核銷異常</td></tr>
                                 <tr><td>特色私廚</td><td class="text-warning">經營凍結</td></tr>
                             </table>
                         </div>
@@ -329,7 +333,7 @@
             </div>
         </div>
 
-        <!-- View 2: 資金營收 (增強版) -->
+        <!-- View 2: 資金營收 -->
         <div id="view-fin" class="view-section">
             <div class="finance-grid">
                 <!-- 左：模擬器 -->
@@ -338,7 +342,7 @@
                     <div class="panel-body p-4">
                         <div class="mb-4">
                             <label class="form-label d-flex justify-content-between"><strong>集採折扣 (成本)</strong> <span class="badge bg-primary" id="lbl-cost">85折</span></label>
-                            <input type="range" class="form-range" min="80" max="95" value="85" id="slider-cost" oninput="updateSim()">
+                            <input type="range" class="form-range mb-4" min="80" max="95" value="85" id="slider-cost" oninput="updateSim()">
                         </div>
                         <div class="mb-4">
                             <label class="form-label d-flex justify-content-between"><strong>用戶折扣 (售價)</strong> <span class="badge bg-success" id="lbl-price">88折</span></label>
@@ -359,7 +363,7 @@
                     </div>
                 </div>
 
-                <!-- 右：佔比圖 (Requirement 4: Restored) -->
+                <!-- 右：佔比圖 -->
                 <div class="panel border-purple">
                     <div class="panel-head">資金流向佔比</div>
                     <div class="panel-body p-3">
@@ -380,7 +384,7 @@
             </div>
         </div>
 
-        <!-- View 3: 用戶端體驗 (Requirement 3: Fixed Aspect Ratio) -->
+        <!-- View 3: 用戶端體驗 -->
         <div id="view-app" class="view-section" style="height:100%;">
             <div class="mobile-demo-wrapper">
                 <div class="phone-mockup">
@@ -423,7 +427,7 @@
             </div>
         </div>
 
-        <!-- View 4: 粵港澳拓展 (Requirement 5: Vertical Layout) -->
+        <!-- View 4: 粵港澳拓展 -->
         <div id="view-gba" class="view-section">
             <div class="gba-grid">
                 <!-- 上：路線圖 -->
@@ -479,7 +483,7 @@
     </main>
 </div>
 
-<!-- 3. 機密文檔模態框 (Requirement 2: Full PDF Content) -->
+<!-- 3. 機密文檔模態框 (Full Content) -->
 <div id="secret-modal" class="modal-overlay">
     <div class="modal-window">
         <div class="doc-nav">
@@ -703,6 +707,7 @@
             list.prepend(row);
             if(list.children.length > 8) list.lastElementChild.remove();
             spawnPulse();
+            
             const gmv = document.getElementById('val-gmv');
             let val = parseInt(gmv.innerText.replace(/,/g, ''));
             gmv.innerText = (val + amt).toLocaleString();
@@ -715,7 +720,9 @@
         if(pwd === '8888') {
             document.getElementById('secret-modal').style.display = 'flex';
             showDoc('contract');
-        } else if (pwd !== null) { alert('密碼錯誤'); }
+        } else if (pwd !== null) {
+            alert('密碼錯誤');
+        }
     }
     function closeSecret() { document.getElementById('secret-modal').style.display = 'none'; }
     function showDoc(id) {
