@@ -17,7 +17,6 @@
             --text-muted: #64748b;
             --card-bg: #ffffff;
             
-            /* 增強色系 */
             --color-primary: #2563eb; /* 皇家藍 */
             --color-success: #059669; /* 翡翠綠 */
             --color-warning: #d97706; /* 琥珀黃 */
@@ -330,7 +329,7 @@
                             <!-- GBA Map -->
                             <svg id="svg-map-gba" class="svg-map active-map" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
                                 <path class="map-land" d="M0,0 L800,0 L800,250 L750,260 L700,240 L650,280 L600,350 L500,320 L480,280 L450,250 L400,280 L350,250 L300,300 L250,350 L200,320 L100,350 L0,300 Z" fill="#e2e8f0" />
-                                <path class="map-land-mo" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
+                                <path class="map-land" d="M250,380 L320,380 L350,420 L340,480 L300,520 L280,550 L200,500 L150,450 Z" fill="#e2e8f0" />
                                 <path class="map-land" d="M620,380 L720,360 L780,400 L750,480 L680,500 L640,450 Z" fill="#e2e8f0" />
                                 <!-- Links -->
                                 <line x1="450" y1="280" x2="680" y2="420" stroke="#93c5fd" stroke-width="2" stroke-dasharray="5,5" />
@@ -761,21 +760,29 @@
     }
 
     function startLiveFeed() {
-        if(feedInterval) clearInterval(feedInterval);
-        feedInterval = setInterval(() => {
+        setInterval(() => {
             const target = locs[Math.floor(Math.random() * locs.length)];
             const amt = Math.floor(Math.random() * 800) + 50;
-            const row = document.createElement('li');
-            row.className = "feed-item";
-            row.innerHTML = `<span class="text-muted">${new Date().toLocaleTimeString()}</span> <strong>${target}</strong> <span class="text-success">核銷 ¥${amt}</span>`;
+            
+            // 添加列表
+            const row = document.createElement('div');
+            row.style.padding = "10px 20px";
+            row.style.borderBottom = "1px solid #f0f0f0";
+            row.style.fontSize = "0.85rem";
+            row.innerHTML = `<span style="color:#a3aed0;">${new Date().toLocaleTimeString()}</span> <strong>${target}</strong> <span style="float:right; color:#05cd99;">核銷 ¥${amt}</span>`;
+            
             const list = document.getElementById('feed-list');
             list.prepend(row);
             if(list.children.length > 8) list.lastElementChild.remove();
+            
+            // 觸發地圖
             spawnPulse();
             
+            // 更新總數
             const gmv = document.getElementById('val-gmv');
             let val = parseInt(gmv.innerText.replace(/,/g, ''));
             gmv.innerText = (val + amt).toLocaleString();
+            
         }, 800);
     }
 
